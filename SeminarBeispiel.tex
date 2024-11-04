@@ -16,91 +16,70 @@
 
 % Unbedingt angeben: Titel, Autoren
 % Freiwillig: Adresse, E-Mail
-\title{Herstellung von Gummibärchen: Ein Überblick über den Produktionsprozess}
+\title{Vergleich binärer und nicht-binärer Serialisierungsformate}
 \numberofauthors{2}
 \author{
-  \alignauthor Je Li Bon \\
-    \email{je@libon.org}
-  \alignauthor Han Srieger\\
-    \email{i72160@hb.dhbw-stuttgart.de}
+  \alignauthor Matthias Raba \\
+    \email{i22029@hb.dhbw-stuttgart.de}
+  \alignauthor Fabian Noll\\
+    \email{i22024@hb.dhbw-stuttgart.de}
 }
 
 \maketitle% Titelangaben produzieren, aber kein Inhaltsverzeichnis, \tableofcontents funktioniert nicht!
 \newpage
 
-\abstract{Diese Arbeit bietet einen Überblick über den Produktionsprozess von Gummibärchen, einem beliebten Süßwarenprodukt. Die Herstellung erfordert spezielle Zutaten und technische Verfahren, um gleichbleibende Qualität und Konsistenz zu gewährleisten. Die wesentlichen Schritte – von der Zubereitung der Grundmasse über die Aromatisierung bis hin zur Formgebung und Trocknung – werden erläutert, ebenso wie wichtige Qualitätskontrollen, die sicherstellen, dass das Endprodukt den Anforderungen entspricht.
-}
+\abstract{In dieser Arbeit vergleichen wir binäre und nicht-binäre Serialisierungsformate mit dem Ziel, ihre Eignung für unterschiedliche Anwendungsbereiche zu evaluieren. Im Fokus stehen die Formate JSON, XML, ProtoBuf und MessagePack, die wir hinsichtlich ihrer Geschwindigkeit, Speicherbedarf und Wartbarkeit/Nutzbarkeit untersuchen. Durch eine Reihe von Tests und Analysen bewerten wir die Leistung der Formate in verschiedenen Szenarien und beleuchten deren Stärken und Schwächen. Darüber hinaus erörtern wir die jeweiligen Vor- und Nachteile in spezifischen Anwendungsgebieten, um eine fundierte Entscheidungsgrundlage für die Auswahl des passenden Serialisierungsformats in der Praxis zu bieten.}
 
-\keywords{Gelatine, Zucker, Bär, Glukose.}
+\keywords{Serialisierungsformate, JSON, XML, ProtoBuf, 
+MessagePack, Binäre Serialisierung, Nicht-binäre Serialisierung,
+Datenformatvergleich, Anwendungsgebiete}
 
 % Section-Überschriften werden automatisch in GROSSBUCHSTABEN gesetzt
 \section{Einleitung}
 
-Gummibärchen zählen zu den beliebtesten Süßwaren. Sie machen Kinder und Erwachsene froh. Das Fruchtgummi, das erstmals in den 1920er Jahren von dem Bonner Konditor Hans Riegel unter dem Markennamen Haribo entwickelt wurde, hat sich seither zu einem international gefragten Produkt entwickelt. Die Herstellung von Gummibärchen ist ein technologisch anspruchsvoller Prozess. Siehe insbesondere die Standardwerke von Hari und Bo~\cite{ACM2019,Ivory2001}.
-
- Ziel dieser Arbeit ist es, einen detaillierten Einblick in die wichtigsten Schritte der Produktion von Gummibärchen zu geben und die zentralen Qualitätskriterien für diese Süßware zu beleuchten.
-
 % Jede Section am besten mit einem Kommentar hier im Quelltext markieren
-\section{Der Herstellungsprozess von Gummibärchen}
+\section{Grundlagen}
 
-Gummibärchen werden in sogenannten Gummibärchen-Fabriken gefertigt. In \cref{fabrik} sehen wir ein Beispiel.
+\subsection{Serialisierung und Deserialisierung}
 
-\begin{figure}[htbp]
-\begin{center}
-\unitlength8mm % hier skalieren, falls gewünscht
-\begin{picture}(4,6)
-%außen
-\put(0,0){\line(1,0){4}}
-\put(4,0){\line(0,1){3}}
-\put(4,3){\line(-1,1){2}}
-\put(2,5){\line(-1,-1){2}}
-\put(0,3){\line(0,-1){3}}
-%innen
-\put(4,3){\line(-1,0){4}}
-\end{picture}
-\end{center}
-\caption{Eine typische Gummibärenfabrik
-         siehe auch~\protect\cite{Ivory2001}.}
-\label{fabrik}
-\end{figure}
-
-
-Die Herstellung von Gummibärchen beginnt mit der Vorbereitung der Grundmasse. Diese besteht in der Regel aus einer Mischung von Zucker, Glukosesirup und Gelatine. Diese drei Hauptbestandteile bilden die Basis für die gummiartige Konsistenz, die Gummibärchen auszeichnet. Zucker und Glukosesirup verleihen dem Produkt die notwendige Süße, während die Gelatine für die charakteristische Elastizität verantwortlich ist. In modernen Produktionsanlagen werden diese Zutaten in großen Mischbehältern bei hoher Temperatur aufgelöst. Dabei ist es wichtig, die Masse kontinuierlich zu rühren, um ein Anbrennen zu vermeiden und eine homogene Konsistenz zu gewährleisten ~\cite{ACM2019}.
-
-
-
-Nach der Vorbereitung der Grundmasse erfolgt der Schritt der Aromatisierung und Färbung. Hier werden der noch flüssigen Masse Fruchtaromen und Farbstoffe hinzugefügt. Die Auswahl der Aromen reicht von klassischen Sorten wie Zitrone, Orange oder Erdbeere bis hin zu exotischeren Varianten wie Ananas oder Mango. Dabei kommen sowohl natürliche als auch künstliche Aromen zum Einsatz. Für die Färbung der Gummibärchen werden heute zunehmend natürliche Farbstoffe verwendet, wie etwa Extrakte aus Spinat für Grün oder Rote-Bete-Saft für Rot. Die Aromatisierung und Färbung müssen präzise abgestimmt sein, um den typischen Geschmack und das ansprechende Aussehen der Gummibärchen sicherzustellen ~\cite{gummi}.
-
-Sobald die Masse fertiggestellt ist, wird sie in speziell vorbereitete Formen gegossen. Diese Formen bestehen in der Regel aus Maisstärke und enthalten Vertiefungen in der Form von kleinen Bären. Der Gießvorgang erfolgt maschinell und muss äußerst genau durchgeführt werden, um sicherzustellen, dass alle Bärchen eine einheitliche Größe und Form haben. Nach dem Gießen beginnt der Aushärtungsprozess, bei dem die Gummibärchen mehrere Stunden bei kontrollierter Temperatur und Luftfeuchtigkeit trocknen. Dieser Schritt ist entscheidend für die endgültige Konsistenz der Fruchtgummis ~\cite{ACM2019,Ivory2001}.
-
-Nach dem Aushärten werden die Gummibärchen aus den Formen gelöst und mit einer dünnen Schicht Trennmittel, meist aus Wachs oder Stärke, überzogen, um zu verhindern, dass sie aneinander kleben. Abschließend durchlaufen die Bärchen eine strenge Qualitätskontrolle, bei der Form, Größe, Konsistenz und Geschmack geprüft werden. Erst danach werden sie verpackt und für den Versand vorbereitet ~\cite{Black1988}.
-
-
-In \cref{tttabelle} sind verschiedene Produkte dargestellt.
-
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Material & Tierart & essbar\\
-\hline
-Gummi & Bär & ja\\
-Lakritz & Schnecke & geht so\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Das gibt es alles.}
-\label{tttabelle}
-\end{table}
+\subsection{Binäre vs. Nicht-Binäre Formate}
 
 % und schon der letzte Abschnitt
-\section{Zusammenfassung}
-Die Herstellung von Gummibärchen ist ein aufwändiger Prozess, der aus mehreren komplexen Schritten besteht. Von der Zubereitung der Grundmasse über die Aromatisierung und Formgebung bis hin zur Trocknung und Qualitätskontrolle erfordert die Produktion modernste Technik und sorgfältige Überwachung. Der Erfolg dieses Prozesses liegt in der präzisen Abstimmung der Zutaten und Verfahren, die zusammen für das charakteristische Aussehen, die Textur und den Geschmack der Gummibärchen verantwortlich sind. Diese gleichbleibende Qualität ist entscheidend für die Beliebtheit der Fruchtgummis bei Verbrauchern weltweit. Auch Artikel mit vielen Autoren~\cite{Black1988}
-befassen sich mit diesem Thema.
+\section{State of the Art Vergleiche}
 
+\section{Kriterien}
+%Nur zum Testen der Länge vorhanden
+\newpage
+\section{Die Serialisierungsformate}
 
-The FitnessGram Pacer test is a multistage aerobic ...
+\subsection{Begründung der Formatwahl}
+
+Die Auswahl der Formate JSON, XML, Protocol Buffers und MessagePack erfolgte aufgrund ihrer unterschiedlichen Stärken, die jeweils auf spezifische Anwendungsfälle und Anforderungen abzielen.
+
+\textbf{JSON} wurde wegen seiner Einfachheit, Lesbarkeit und breiten Unterstützung in Web-Technologien gewählt. Es ist ideal für Situationen, in denen menschliche Lesbarkeit und einfache Integration in verschiedene Programmiersprachen wichtig sind.
+
+\textbf{XML} wurde aufgrund seiner Flexibilität und umfassenden Unterstützung für strukturierte Daten gewählt. Es ist besonders geeignet für Anwendungen, die eine strenge Validierung und Unterstützung für umfangreiche Metadaten erfordern, wie in vielen Legacy-Systemen oder dokumentenzentrierten Umgebungen.
+
+\textbf{Protocol Buffers} wurden aufgrund ihrer hohen Effizienz und der Fähigkeit, komplexe Datenstrukturen zu serialisieren, ausgewählt. Sie sind ideal für leistungsorientierte Anwendungen, in denen Geschwindigkeit und geringer Speicherbedarf entscheidend sind, wie bei der Kommunikation zwischen Microservices oder in mobilen Anwendungen.
+
+\textbf{MessagePack} ergänzt die Auswahl durch seine Effizienz in der Datenspeicherung und -übertragung, was es zu einer ausgezeichneten Wahl für ressourcenbeschränkte Umgebungen macht. Diese Diversität an Formaten ermöglicht es, verschiedene Szenarien optimal abzudecken, von einfacher Web-Kommunikation bis hin zu hochperformanten, ressourcenoptimierten Anwendungen.
+%Nur zum Testen der Länge vorhanden
+\newpage 
+\subsection{Vorstellung der Formate}
+
+\textbf{JSON (JavaScript Object Notation)}
+JSON ist ein textbasiertes Serialisierungsformat, das durch seine Einfachheit und Struktur überzeugt. Es speichert Daten in Form von Schlüssel-Wert-Paaren, Arrays und verschachtelten Objekten, die leicht von Maschinen verarbeitet und von Menschen gelesen werden können. JSON hat sich besonders in der Webentwicklung etabliert, da es direkt von JavaScript unterstützt wird, was die Interoperabilität zwischen Frontend und Backend erleichtert. Viele Web-APIs nutzen JSON, um Daten zwischen Client und Server auszutauschen. Die breite Unterstützung in verschiedenen Programmiersprachen macht JSON zu einem universellen Standard für viele Anwendungsfälle. JSON ist nicht auf Webanwendungen beschränkt, sondern findet auch in Konfigurationsdateien, Datenbanken wie MongoDB und bei der Interprozesskommunikation Anwendung. Allerdings hat JSON auch Einschränkungen, darunter ein höherer Speicherbedarf und eine geringere Verarbeitungsgeschwindigkeit im Vergleich zu binären Formaten. Ein weiteres potenzielles Problem ist das Fehlen einer strikten Typisierung, was in größeren Projekten zu Fehleranfälligkeit führen kann. Dennoch bleibt JSON aufgrund seiner Balance zwischen Lesbarkeit und Funktionalität ein unverzichtbares Werkzeug in der modernen Softwareentwicklung.
+
+\textbf{MessagePack}
+MessagePack ist ein binäres Serialisierungsformat, das entwickelt wurde, um die Effizienz von Datenübertragungen zu maximieren. Im Gegensatz zu textbasierten Formaten wie JSON oder XML speichert MessagePack Daten in einem kompakten binären Format, was die Dateigröße erheblich reduziert. Dies führt zu schnelleren Übertragungszeiten und geringerer Speichernutzung, was besonders in ressourcenbeschränkten Umgebungen wie mobilen oder eingebetteten Systemen von Vorteil ist. MessagePack unterstützt eine Vielzahl von Datentypen, darunter Strings, Zahlen, Arrays, Maps und sogar Binärdaten, was es vielseitig einsetzbar macht. Ein bedeutendes Merkmal ist die Fähigkeit, die Typinformationen effizient zu kodieren, was eine schnellere Serialisierung und Deserialisierung ermöglicht. Dies ist besonders nützlich in Hochleistungsanwendungen wie Spieleservern, Echtzeitsystemen und IoT-Geräten. Trotz seiner Vorteile in Bezug auf Effizienz hat MessagePack eine eingeschränkte Lesbarkeit für Menschen, was die Fehlerbehebung und Wartung erschweren kann, wenn keine geeigneten Werkzeuge zur Verfügung stehen. Außerdem kann die Komplexität der Implementierung in bestimmten Sprachen höher sein, da spezielle Bibliotheken erforderlich sind, um die binären Daten korrekt zu verarbeiten. Dennoch ist MessagePack eine ausgezeichnete Wahl, wenn die Prioritäten auf Geschwindigkeit, Speicherplatz und Leistung liegen, und es wird zunehmend in Bereichen eingesetzt, in denen JSON aufgrund seiner Textbasiertheit ineffizient wäre.
+
+\section{Vergleichsmethodik}
+
+\section{Ergebnisauswertung}
+
+\section{Fazit und Ausblick}
+
+In Zukunft wäre es möglich diese Metriken zu erweitern sowie weitere Formate hinzuzufügen als auch die selbe Umgebung in mehreren Programmiersprachen zu testen um etwaige Implementierungsunterschiede durch eine größere Menge an Daten auszumerzen.
 
 % Bibliographie entweder direkt hier eingeben (nur im Notfall)...
 %\begin{thebibliography}{9}
