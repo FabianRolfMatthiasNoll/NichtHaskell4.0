@@ -7,8 +7,9 @@ import os
 import random
 import platform
 import sys
-from tqdm import tqdm
-from io import BytesIO
+
+# Setting Variables
+DATASET_BATCH_SIZE = 10000
 
 # Setup paths
 OUTPUT_DIR = "serialization_test_results"
@@ -32,7 +33,6 @@ def get_system_info():
     return info
 
 
-# Helper for approximate size calculation
 def approximate_deep_size(obj):
     """Estimates size of nested data without recursively measuring each entry."""
     if isinstance(obj, dict):
@@ -53,13 +53,12 @@ def generate_datasets(target_size=200 * 1024**2):
 
     # Key-Value pairs generation with batch size check
     kv_pairs = {}
-    batch_size = 10000  # Adjust this for balance between speed and accuracy
     print("Generating key-value pairs dataset...")
     while approximate_deep_size(kv_pairs) < target_size:
         kv_pairs.update(
             {
                 f"key_{i}": f"value_{i}"
-                for i in range(len(kv_pairs), len(kv_pairs) + batch_size)
+                for i in range(len(kv_pairs), len(kv_pairs) + DATASET_BATCH_SIZE)
             }
         )
     kv_size = approximate_deep_size(kv_pairs)
@@ -69,7 +68,7 @@ def generate_datasets(target_size=200 * 1024**2):
     flat_list = []
     print("Generating flat list dataset...")
     while approximate_deep_size(flat_list) < target_size:
-        flat_list.extend([random.randint(1, 100) for _ in range(batch_size)])
+        flat_list.extend([random.randint(1, 100) for _ in range(DATASET_BATCH_SIZE)])
     flat_list_size = approximate_deep_size(flat_list)
     print(f"Actual flat list size: {flat_list_size / (1024 ** 2):.2f} MB")
 
