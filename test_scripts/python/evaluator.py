@@ -5,10 +5,10 @@ import msgpack
 import psutil
 import os
 import random
-import pickle
 import platform
-
+import sys
 from tqdm import tqdm
+from io import BytesIO
 
 # Setup paths
 OUTPUT_DIR = "serialization_test_results"
@@ -32,47 +32,56 @@ def get_system_info():
     return info
 
 
-# Adjusted Data Generation for ~200 MB per dataset and Progress Bars
-def generate_datasets():
-    print("Generating datasets of approximately 200 MB each...")
+# Helper for approximate size calculation
+def approximate_deep_size(obj):
+    """Estimates size of nested data without recursively measuring each entry."""
+    if isinstance(obj, dict):
+        key_size = sys.getsizeof(next(iter(obj.keys()), ""))  # average key size
+        value_size = sys.getsizeof(next(iter(obj.values()), ""))  # average value size
+        return len(obj) * (key_size + value_size)
+    elif isinstance(obj, list):
+        item_size = sys.getsizeof(next(iter(obj), 0))  # average item size
+        return len(obj) * item_size
+    return sys.getsizeof(obj)
 
-    # Target approximate size in bytes (200 MB)
-    target_size = 200 * 1024**2
 
-    # Key-Value pairs - Reduce to ~200 MB
-    kv_target_count = target_size // 100  # Approximate size per entry
+# Optimized Data Generation for Target File Size with Batched Checking
+def generate_datasets(target_size=200 * 1024**2):
+    print(
+        f"Generating datasets to approximately reach {target_size / (1024**2):.2f} MB..."
+    )
+
+    # Key-Value pairs generation with batch size check
+    kv_pairs = {}
+    batch_size = 10000  # Adjust this for balance between speed and accuracy
     print("Generating key-value pairs dataset...")
-    kv_pairs = {
-        f"key_{i}": f"value_{i}"
-        for i in tqdm(range(kv_target_count), desc="Key-Value Pairs")
-    }
-    kv_size = len(pickle.dumps(kv_pairs))
-    print(f"Actual key-value pairs size in memory: {kv_size / (1024 ** 2):.2f} MB")
+    while approximate_deep_size(kv_pairs) < target_size:
+        kv_pairs.update(
+            {
+                f"key_{i}": f"value_{i}"
+                for i in range(len(kv_pairs), len(kv_pairs) + batch_size)
+            }
+        )
+    kv_size = approximate_deep_size(kv_pairs)
+    print(f"Actual key-value pairs size: {kv_size / (1024 ** 2):.2f} MB")
 
-    # Flat, Primitive List - Reduce to ~200 MB
-    flat_list_target_count = target_size // 4  # Approximate size per integer
+    # Flat, Primitive List generation with batch size check
+    flat_list = []
     print("Generating flat list dataset...")
-    flat_list = [
-        random.randint(1, 100)
-        for _ in tqdm(range(flat_list_target_count), desc="Flat List")
-    ]
-    flat_list_size = len(pickle.dumps(flat_list))
-    print(f"Actual flat list size in memory: {flat_list_size / (1024 ** 2):.2f} MB")
+    while approximate_deep_size(flat_list) < target_size:
+        flat_list.extend([random.randint(1, 100) for _ in range(batch_size)])
+    flat_list_size = approximate_deep_size(flat_list)
+    print(f"Actual flat list size: {flat_list_size / (1024 ** 2):.2f} MB")
 
-    # Composite, Complex Datatype with Reduced Nested Structure
+    # Composite, Complex Data Type
     complex_data = {
         "info": kv_pairs,
         "numbers": flat_list,
-        "nested": [
-            {"id": i, "name": f"name_{i}"} for i in range(100)
-        ],  # Smaller nested count for testing
+        "nested": [{"id": i, "name": f"name_{i}"} for i in range(1000)],
     }
-    complex_data_size = len(pickle.dumps(complex_data))
-    print(
-        f"Actual complex data size in memory: {complex_data_size / (1024 ** 2):.2f} MB"
-    )
+    complex_data_size = approximate_deep_size(complex_data)
+    print(f"Actual complex data size: {complex_data_size / (1024 ** 2):.2f} MB")
 
-    print("All datasets generated and size verified.\n")
     return kv_pairs, flat_list, complex_data
 
 
@@ -85,7 +94,7 @@ def serialize_xml(data):
     root = ET.Element("root")
     if isinstance(data, dict):
         for k, v in data.items():
-            child = ET.SubElement(root, k)
+            child = ET.SubElement(root, "item", key=k)
             child.text = str(v)
     elif isinstance(data, list):
         for item in data:
@@ -108,24 +117,21 @@ def measure_time(func, *args):
 
 # Main Test Function with All Formats
 def run_tests():
-    kv_pairs, flat_list, complex_data = generate_datasets()
-
+    kv_pairs, flat_list, complex_data = generate_datasets(
+        target_size=1 * 1024**3
+    )  # 1GB target
     datasets = {
         "kv_pairs": kv_pairs,
         "flat_list": flat_list,
         "complex_data": complex_data,
     }
-
     system_info = get_system_info()
     results = []
 
     for name, dataset in datasets.items():
         print(f"Processing dataset: {name}")
+        size_in_memory = approximate_deep_size(dataset)
 
-        # In-memory size
-        size_in_memory = len(pickle.dumps(dataset))
-
-        # Apply all serialization formats to each dataset
         protocols = [
             ("JSON", serialize_json, json.loads, ".json"),
             ("XML", serialize_xml, ET.fromstring, ".xml"),
@@ -134,11 +140,9 @@ def run_tests():
 
         for protocol_name, serializer, deserializer, file_ext in protocols:
             print(f"  Serializing with {protocol_name}...")
-            # Serialization
             serialized_data, serialization_time = measure_time(serializer, dataset)
             serialized_size = len(serialized_data)
 
-            # Save file with the correct extension
             file_path = os.path.join(OUTPUT_DIR, f"{name}_{protocol_name}{file_ext}")
             with open(file_path, "wb") as file:
                 file.write(serialized_data)
@@ -146,15 +150,12 @@ def run_tests():
                 f"    {protocol_name} serialization complete. File saved at: {file_path}"
             )
 
-            # Deserialization
             print(f"  Deserializing {protocol_name} data...")
             _, deserialization_time = measure_time(deserializer, serialized_data)
             print(f"    {protocol_name} deserialization complete.")
 
-            # Compression Ratio
             compression_ratio = size_in_memory / serialized_size
 
-            # Record Results
             results.append(
                 {
                     "Dataset": name,
