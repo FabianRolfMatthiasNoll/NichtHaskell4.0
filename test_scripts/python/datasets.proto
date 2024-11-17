@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message KeyValue {
+  string key = 1;
+  string value = 2;
+}
+
+message KeyValuePairs {
+  repeated KeyValue pairs = 1;
+}
+
+
+message FlatList {
+  repeated int32 values = 1;
+}
+
+message NestedItem {
+  int32 id = 1;
+  string name = 2;
+}
+
+message ComplexData {
+  KeyValuePairs info = 1;
+  FlatList numbers = 2;
+  repeated NestedItem nested = 3;
+}
