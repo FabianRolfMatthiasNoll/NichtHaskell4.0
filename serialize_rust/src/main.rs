@@ -45,10 +45,10 @@ fn format_size(bytes: usize) -> String {
 
 fn main() {
     let start_timestamp = Instant::now();
-    let data = generate_flat_bigint_list((2 as usize).pow(30));
+    let data = generate_flat_bigint_list((2 as usize).pow(27));
     let data_generated_timestamp = Instant::now();
 
-    let serialized = JSONSerializer::serialize(&data).expect("failed to serialize");
+    let serialized = XMLSerializer::serialize(&data).expect("failed to serialize");
     let data_serialized_timestamp = Instant::now();
     let compression_ratio = data.payload_size() as f32 / serialized.len() as f32;
     
