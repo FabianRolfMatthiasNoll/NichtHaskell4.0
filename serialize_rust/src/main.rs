@@ -1,7 +1,7 @@
 use core::time;
 use std::{collections::HashMap, io::Write, time::Instant};
 use rand::Rng;
-use serialize_rust::{data::SerializableData, serializer::Serializer, serializers::{json::JSONSerializer, xml::XMLSerializer}};
+use serialize_rust::{data::SerializableData, datagen::{random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, xml::XMLSerializer}};
 use std::fs::File;
 
 pub fn generate_flat_int_list(size_in_bytes: usize) -> SerializableData {
@@ -45,10 +45,29 @@ fn format_size(bytes: usize) -> String {
 
 fn main() {
     let start_timestamp = Instant::now();
-    let data = generate_flat_bigint_list((2 as usize).pow(27));
+
+    // "generate a list with 40 entries, each entry being either:
+    // - a random i32
+    // - a random float
+    // - a random string of length 3
+    // - a random kvpair, with a key length of 5 and the value being either:
+    //     - a random boolean
+    //     - a random f64
+    // "
+    // This is just an example, but you get the gist.
+    // We can declaratively build a pretty complex dataset, but with runtime parametrisation. Neat.
+    let data = random_list(40, || random_choice(vec![
+        random_int,
+        random_float,
+        || random_string(3),
+        || random_kvpair(5, || random_choice(vec![
+            random_boolean,
+            random_bigfloat
+        ]))
+    ]));
     let data_generated_timestamp = Instant::now();
 
-    let serialized = XMLSerializer::serialize(&data).expect("failed to serialize");
+    let serialized = JSONSerializer::serialize(&data).expect("failed to serialize");
     let data_serialized_timestamp = Instant::now();
     let compression_ratio = data.payload_size() as f32 / serialized.len() as f32;
     
