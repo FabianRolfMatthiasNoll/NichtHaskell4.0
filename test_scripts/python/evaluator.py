@@ -5,6 +5,7 @@ import psutil
 import platform
 import datasets_pb2
 import msgpack
+import xml.etree.ElementTree as ET
 from sys import getsizeof
 
 # Configuration
@@ -59,6 +60,25 @@ def deserialize_msgpack(data):
     return msgpack.unpackb(data)
 
 
+def serialize_xml(data):
+    root = ET.Element("root")
+    if isinstance(data, dict):
+        for k, v in data.items():
+            child = ET.SubElement(root, "item", key=k)
+            child.text = str(v)
+    elif isinstance(data, list):
+        for item in data:
+            child = ET.SubElement(root, "item")
+            child.text = str(item)
+    return ET.tostring(root, encoding="utf-8")
+
+
+def deserialize_xml(data):
+    root = ET.fromstring(data)
+    if root.tag == "root":
+        return {child.attrib.get("key", None): child.text for child in root}
+
+
 def serialize_protobuf(data):
     proto_data = datasets_pb2.MixedList()
     for item in data:
@@ -69,9 +89,9 @@ def serialize_protobuf(data):
             serialized_item.float_value = item
         elif isinstance(item, str):
             serialized_item.string_value = item
-        elif isinstance(item, dict):  # Handle key-value pairs
+        elif isinstance(item, dict):  # Key-value pairs
+            kvpair = serialized_item.kvpair_value
             for k, v in item.items():
-                kvpair = serialized_item.kvpair_value
                 kvpair.key = k
                 if isinstance(v, bool):
                     kvpair.bool_value = v
@@ -79,6 +99,11 @@ def serialize_protobuf(data):
                     kvpair.double_value = v
                 elif isinstance(v, str):
                     kvpair.string_value = v
+        elif isinstance(item, list):  # Nested data
+            nested_item = serialized_item.nested_value
+            for sub_item in item:
+                nested_data = nested_item.items.add()
+                nested_data.items.add()
     return proto_data.SerializeToString()
 
 
@@ -95,6 +120,10 @@ def deserialize_protobuf(data):
             result.append(item.string_value)
         elif item.HasField("kvpair_value"):
             result.append({item.kvpair_value.key: item.kvpair_value.string_value})
+        elif item.HasField("nested_value"):
+            result.append(
+                [nested_item.items for nested_item in item.nested_value.items]
+            )
     return result
 
 
@@ -120,6 +149,7 @@ def run_tests():
 
         protocols = [
             ("JSON", serialize_json, deserialize_json, ".json"),
+            ("XML", serialize_xml, deserialize_xml, ".xml"),
             ("MessagePack", serialize_msgpack, deserialize_msgpack, ".msgpack"),
             ("ProtoBuf", serialize_protobuf, deserialize_protobuf, ".pb"),
         ]

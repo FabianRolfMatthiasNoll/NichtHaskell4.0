@@ -9,21 +9,18 @@ message KeyValue {
   }
 }
 
+message NestedData {
+  repeated NestedData items = 1;
+}
+
 message MixedData {
   oneof value {
     int32 int_value = 1;
     float float_value = 2;
     string string_value = 3;
     KeyValue kvpair_value = 4;
+    NestedData nested_value = 5;
   }
-}
-
-message NestedData {
-  repeated NestedData items = 1;
-}
-
-message KeyValuePairs {
-  repeated KeyValue pairs = 1;
 }
 
 message MixedList {
