@@ -1,7 +1,7 @@
 use core::time;
-use std::{collections::HashMap, io::Write, time::Instant};
+use std::{collections::HashMap, fs, io::Write, time::Instant};
 use rand::Rng;
-use serialize_rust::{data::SerializableData, datagen::{random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, xml::XMLSerializer}};
+use serialize_rust::{data::SerializableData, datagen::{random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, protobuf::ProtobufSerializer, xml::XMLSerializer}};
 use std::fs::File;
 
 pub fn generate_flat_int_list(size_in_bytes: usize) -> SerializableData {
@@ -56,7 +56,7 @@ fn main() {
     // "
     // This is just an example, but you get the gist.
     // We can declaratively build a pretty complex dataset, but with runtime parametrisation. Neat.
-    let data = random_list(40, || random_choice(vec![
+    let data = random_list(4000, || random_choice(vec![
         random_int,
         random_float,
         || random_string(3),
@@ -67,7 +67,7 @@ fn main() {
     ]));
     let data_generated_timestamp = Instant::now();
 
-    let serialized = JSONSerializer::serialize(&data).expect("failed to serialize");
+    let serialized = ProtobufSerializer::serialize(&data).expect("failed to serialize");
     let data_serialized_timestamp = Instant::now();
     let compression_ratio = data.payload_size() as f32 / serialized.len() as f32;
     

@@ -1,9 +1,9 @@
 use crate::{data::SerializableData, serializer::Serializer};
 
-pub struct ProtobufSerializer;
+pub struct MessagepackSerializer;
 
-impl Serializer for ProtobufSerializer {
-    fn serialize(data: &SerializableData) -> Result<String, String> {
+impl Serializer for MessagepackSerializer {
+    fn serialize(data: &SerializableData) -> Result<Vec<u8>, String> {
         todo!()
     }
 }

@@ -3,7 +3,7 @@ use core::fmt;
 use serde::{de::{self, MapAccess, SeqAccess, Visitor}, ser::{SerializeMap, SerializeSeq}, Deserialize, Deserializer, Serialize, Serializer};
 
 // arbitrary data
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum SerializableData {
     Boolean(bool),
     Integer(i32),
