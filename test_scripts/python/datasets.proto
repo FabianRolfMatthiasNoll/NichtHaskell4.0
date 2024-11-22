@@ -2,25 +2,30 @@ syntax = "proto3";
 
 message KeyValue {
   string key = 1;
-  string value = 2;
+  oneof value {
+    bool bool_value = 2;
+    double double_value = 3;
+    string string_value = 4;
+  }
+}
+
+message MixedData {
+  oneof value {
+    int32 int_value = 1;
+    float float_value = 2;
+    string string_value = 3;
+    KeyValue kvpair_value = 4;
+  }
+}
+
+message NestedData {
+  repeated NestedData items = 1;
 }
 
 message KeyValuePairs {
   repeated KeyValue pairs = 1;
 }
 
-
-message FlatList {
-  repeated int32 values = 1;
-}
-
-message NestedItem {
-  int32 id = 1;
-  string name = 2;
-}
-
-message ComplexData {
-  KeyValuePairs info = 1;
-  FlatList numbers = 2;
-  repeated NestedItem nested = 3;
+message MixedList {
+  repeated MixedData items = 1;
 }

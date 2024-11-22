@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tasets.proto\"&\n\x08KeyValue\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\")\n\rKeyValuePairs\x12\x18\n\x05pairs\x18\x01 \x03(\x0b\x32\t.KeyValue\"\x1a\n\x08\x46latList\x12\x0e\n\x06values\x18\x01 \x03(\x05\"&\n\nNestedItem\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\"d\n\x0b\x43omplexData\x12\x1c\n\x04info\x18\x01 \x01(\x0b\x32\x0e.KeyValuePairs\x12\x1a\n\x07numbers\x18\x02 \x01(\x0b\x32\t.FlatList\x12\x1b\n\x06nested\x18\x03 \x03(\x0b\x32\x0b.NestedItemb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tasets.proto\"f\n\x08KeyValue\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x14\n\nbool_value\x18\x02 \x01(\x08H\x00\x12\x16\n\x0c\x64ouble_value\x18\x03 \x01(\x01H\x00\x12\x16\n\x0cstring_value\x18\x04 \x01(\tH\x00\x42\x07\n\x05value\"{\n\tMixedData\x12\x13\n\tint_value\x18\x01 \x01(\x05H\x00\x12\x15\n\x0b\x66loat_value\x18\x02 \x01(\x02H\x00\x12\x16\n\x0cstring_value\x18\x03 \x01(\tH\x00\x12!\n\x0ckvpair_value\x18\x04 \x01(\x0b\x32\t.KeyValueH\x00\x42\x07\n\x05value\"(\n\nNestedData\x12\x1a\n\x05items\x18\x01 \x03(\x0b\x32\x0b.NestedData\")\n\rKeyValuePairs\x12\x18\n\x05pairs\x18\x01 \x03(\x0b\x32\t.KeyValue\"&\n\tMixedList\x12\x19\n\x05items\x18\x01 \x03(\x0b\x32\n.MixedDatab\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,13 +32,13 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'datasets_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_KEYVALUE']._serialized_start=18
-  _globals['_KEYVALUE']._serialized_end=56
-  _globals['_KEYVALUEPAIRS']._serialized_start=58
-  _globals['_KEYVALUEPAIRS']._serialized_end=99
-  _globals['_FLATLIST']._serialized_start=101
-  _globals['_FLATLIST']._serialized_end=127
-  _globals['_NESTEDITEM']._serialized_start=129
-  _globals['_NESTEDITEM']._serialized_end=167
-  _globals['_COMPLEXDATA']._serialized_start=169
-  _globals['_COMPLEXDATA']._serialized_end=269
+  _globals['_KEYVALUE']._serialized_end=120
+  _globals['_MIXEDDATA']._serialized_start=122
+  _globals['_MIXEDDATA']._serialized_end=245
+  _globals['_NESTEDDATA']._serialized_start=247
+  _globals['_NESTEDDATA']._serialized_end=287
+  _globals['_KEYVALUEPAIRS']._serialized_start=289
+  _globals['_KEYVALUEPAIRS']._serialized_end=330
+  _globals['_MIXEDLIST']._serialized_start=332
+  _globals['_MIXEDLIST']._serialized_end=370
 # @@protoc_insertion_point(module_scope)
