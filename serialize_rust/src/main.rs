@@ -1,8 +1,8 @@
 use core::time;
 use std::{collections::HashMap, fs, io::Write, time::Instant};
 use rand::Rng;
+use serde_protobuf::value::Message;
 use serialize_rust::{data::SerializableData, datagen::{random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, messagepack::MessagepackSerializer, protobuf::ProtobufSerializer, xml::XMLSerializer}};
-use std::fs::File;
 
 pub fn generate_flat_int_list(size_in_bytes: usize) -> SerializableData {
     let mut rng = rand::thread_rng();
@@ -44,7 +44,6 @@ fn format_size(bytes: usize) -> String {
 }
 
 fn main() {
-    let start_timestamp = Instant::now();
 
     // "generate a list with 40 entries, each entry being either:
     // - a random i32
@@ -56,7 +55,7 @@ fn main() {
     // "
     // This is just an example, but you get the gist.
     // We can declaratively build a pretty complex dataset, but with runtime parametrisation. Neat.
-    let data = random_list(4000, || random_choice(vec![
+    let data = random_list(400000, || random_choice(vec![
         random_int,
         random_float,
         || random_string(3),
@@ -65,15 +64,27 @@ fn main() {
             random_bigfloat
         ]))
     ]));
-    let data_generated_timestamp = Instant::now();
 
-    let serialized = MessagepackSerializer::serialize(&data).expect("failed to serialize");
-    let data_serialized_timestamp = Instant::now();
-    let compression_ratio = data.payload_size() as f32 / serialized.len() as f32;
-    
-    println!("took {:?} to generate data", data_generated_timestamp - start_timestamp);
-    println!("took {:?} to serialize data", data_serialized_timestamp - data_generated_timestamp);
-    println!("actual data size: {}", format_size(data.payload_size()));
-    println!("serialized data size: {}", format_size(serialized.len()));
-    println!("compression ratio: {compression_ratio}");
+    type NamedSerializer = (&'static str, fn (&SerializableData) -> Result<Vec<u8>, String>);
+    let serializers: Vec<NamedSerializer> = vec![
+        ("Protobuf",    ProtobufSerializer::serialize),
+        ("Messagepack", MessagepackSerializer::serialize),
+        ("XML",         XMLSerializer::serialize),
+        ("JSON",        JSONSerializer::serialize)
+    ];
+
+    for (name, serializer) in serializers {
+        let start_timestamp = Instant::now();
+        let serialized_data = serializer(&data).expect("failed to serialize");
+        let end_timestamp = Instant::now();
+        let time_taken = end_timestamp - start_timestamp;
+        let compression_ratio = data.payload_size() as f32 / serialized_data.len() as f32;
+
+        println!("Serializer '{name}':");
+        println!("took {:?} to serialize data", time_taken);
+        println!("actual data size: {}", format_size(data.payload_size()));
+        println!("serialized data size: {}", format_size(serialized_data.len()));
+        println!("compression ratio: {compression_ratio}");
+        println!("");
+    }
 }
