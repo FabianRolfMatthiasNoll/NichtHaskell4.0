@@ -5,8 +5,11 @@ import psutil
 import platform
 import datasets_pb2
 import msgpack
-import xml.etree.ElementTree as ET
+from lxml import etree
 from sys import getsizeof
+import cProfile
+import pstats
+
 
 # Configuration
 DATASETS_DIR = "datasets"
@@ -61,22 +64,49 @@ def deserialize_msgpack(data):
 
 
 def serialize_xml(data):
-    root = ET.Element("root")
-    if isinstance(data, dict):
-        for k, v in data.items():
-            child = ET.SubElement(root, "item", key=k)
-            child.text = str(v)
-    elif isinstance(data, list):
-        for item in data:
-            child = ET.SubElement(root, "item")
-            child.text = str(item)
-    return ET.tostring(root, encoding="utf-8")
+    def build_xml(element, data):
+        if isinstance(data, dict):
+            for k, v in data.items():
+                child = etree.SubElement(element, "item", key=k)
+                child.text = str(v)
+        elif isinstance(data, list):
+            for item in data:
+                child = etree.SubElement(element, "item")
+                build_xml(child, item)
+        else:
+            element.text = str(data)
+
+    root = etree.Element("root")
+    build_xml(root, data)
+    return etree.tostring(root, pretty_print=False, encoding="utf-8")
 
 
 def deserialize_xml(data):
-    root = ET.fromstring(data)
-    if root.tag == "root":
-        return {child.attrib.get("key", None): child.text for child in root}
+    root = etree.fromstring(data)
+
+    def parse_xml(element):
+        if element.tag == "item" and "key" in element.attrib:
+            return {element.attrib["key"]: element.text}
+        elif len(element):
+            return [parse_xml(child) for child in element]
+        else:
+            return element.text
+
+    return parse_xml(root)
+
+
+def serialize_nested_protobuf(data, proto_item):
+    """Recursively serialize nested data into ProtoBuf NestedData."""
+    if isinstance(data, int):
+        proto_item.int_value = data
+    elif isinstance(data, float):
+        proto_item.float_value = data
+    elif isinstance(data, str):
+        proto_item.string_value = data
+    elif isinstance(data, list):
+        for sub_item in data:
+            nested_item = proto_item.items.add()
+            serialize_nested_protobuf(sub_item, nested_item)
 
 
 def serialize_protobuf(data):
@@ -90,8 +120,8 @@ def serialize_protobuf(data):
         elif isinstance(item, str):
             serialized_item.string_value = item
         elif isinstance(item, dict):  # Key-value pairs
-            kvpair = serialized_item.kvpair_value
             for k, v in item.items():
+                kvpair = serialized_item.kvpair_value
                 kvpair.key = k
                 if isinstance(v, bool):
                     kvpair.bool_value = v
@@ -101,10 +131,22 @@ def serialize_protobuf(data):
                     kvpair.string_value = v
         elif isinstance(item, list):  # Nested data
             nested_item = serialized_item.nested_value
-            for sub_item in item:
-                nested_data = nested_item.items.add()
-                nested_data.items.add()
+            serialize_nested_protobuf(item, nested_item)
     return proto_data.SerializeToString()
+
+
+def deserialize_nested_protobuf(proto_item):
+    """Recursively deserialize ProtoBuf NestedData."""
+    if proto_item.HasField("int_value"):
+        return proto_item.int_value
+    elif proto_item.HasField("float_value"):
+        return proto_item.float_value
+    elif proto_item.HasField("string_value"):
+        return proto_item.string_value
+    elif proto_item.HasField("nested_value"):
+        return deserialize_nested_protobuf(proto_item.nested_value)
+    else:
+        return [deserialize_nested_protobuf(item) for item in proto_item.items]
 
 
 def deserialize_protobuf(data):
@@ -121,9 +163,7 @@ def deserialize_protobuf(data):
         elif item.HasField("kvpair_value"):
             result.append({item.kvpair_value.key: item.kvpair_value.string_value})
         elif item.HasField("nested_value"):
-            result.append(
-                [nested_item.items for nested_item in item.nested_value.items]
-            )
+            result.append(deserialize_nested_protobuf(item.nested_value))
     return result
 
 
@@ -180,4 +220,6 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    run_tests()
+    cProfile.run("run_tests()", "profile_results")
+    p = pstats.Stats("profile_results")
+    p.strip_dirs().sort_stats("time").print_stats(10)

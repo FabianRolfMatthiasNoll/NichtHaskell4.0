@@ -45,11 +45,18 @@ fn generate_mixed_dataset(size: usize) -> SerializableData {
 
 fn generate_nested_dataset(size: usize, depth: usize, breadth: usize) -> SerializableData {
     if size <= 0 || depth == 0 {
-        SerializableData::Integer(0)
+        random_choice(vec![
+            random_int,
+            random_float,
+            || random_string(10),
+            || random_boolean(),
+            || random_kvpair(5, random_bigfloat),
+        ])
     } else {
         random_list(breadth, || generate_nested_dataset(size / breadth, depth - 1, breadth))
     }
 }
+
 
 fn generate_kv_dataset(size: usize, key_length: usize) -> SerializableData {
     random_list(size / 100, || random_kvpair(key_length, random_bigfloat))
