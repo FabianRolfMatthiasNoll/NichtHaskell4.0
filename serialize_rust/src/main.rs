@@ -35,6 +35,18 @@ fn generate_dataset_deep_flat_intlist(depth: usize, size_in_bytes: usize) -> Ser
     }
 }
 
+fn generate_dataset_flat_floatlist(size_in_bytes: usize) -> SerializableData {
+    random_list(size_in_bytes / 4, random_float)
+}
+
+fn generate_dataset_deep_flat_floatlist(depth: usize, size_in_bytes: usize) -> SerializableData {
+    if depth == 0 {
+        generate_dataset_flat_floatlist(size_in_bytes)
+    } else {
+        SerializableData::KeyValuePair(String::from("child"), Box::new(generate_dataset_deep_flat_floatlist(depth - 1, size_in_bytes)))
+    }
+}
+
 fn generate_dataset_int_tree(depth: usize, children_per_node: usize) -> SerializableData {
     if depth <= 0 {
         SerializableData::List(vec![
@@ -65,6 +77,22 @@ fn generate_datasets() {
     let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("../datasets/dataset_deep_flat_intlist_8MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_flat_floatlist((2 as usize).pow(28));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_flat_floatlist_256MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_flat_floatlist((2 as usize).pow(23));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_flat_floatlist_8MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(28));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_deep_flat_floatlist_256MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(23));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_deep_flat_floatlist_8MB.json", &serialized).unwrap();
 
     let dataset = generate_dataset_int_tree(4, 8);
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
