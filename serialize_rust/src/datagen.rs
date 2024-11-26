@@ -29,6 +29,10 @@ pub fn random_list(length: usize, contents: impl Fn() -> SerializableData) -> Se
     SerializableData::List((0..length).map(|_| contents()).collect())
 }
 
+pub fn list(contents: Vec<impl Fn() -> SerializableData>) -> SerializableData {
+    SerializableData::List(contents.iter().map(|generator| generator()).collect())
+}
+
 pub fn random_kvpair(keylength: usize, contents: impl Fn() -> SerializableData) -> SerializableData {
     let key = thread_rng().sample_iter(&Alphanumeric).take(keylength).map(char::from).collect();
     let value = Box::new(contents());
