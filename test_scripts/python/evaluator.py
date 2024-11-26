@@ -1,5 +1,6 @@
 import time
 import json
+import math
 import os
 import psutil
 import platform
@@ -169,6 +170,7 @@ def run_tests():
         print(f"Loading {dataset_file}...")
         dataset = load_json_dataset(dataset_path)
         in_memory_size = get_object_size(dataset)
+        print(f"Loaded with {in_memory_size / math.pow(1024, 2)} MB")
 
         protocols = [
             ("JSON", serialize_json, deserialize_json, ".json"),
@@ -178,10 +180,12 @@ def run_tests():
         ]
 
         for protocol_name, serialize_func, deserialize_func, file_ext in protocols:
+            print(f"Meassuring Performance of {protocol_name}...")
+            print("Serializing...")
             serialized_data, serialization_time = measure_time(serialize_func, dataset)
+            print("Deserializing...")
             _, deserialization_time = measure_time(deserialize_func, serialized_data)
             serialized_size = len(serialized_data)
-            print(f"Meassuring Performance of {protocol_name}...")
             compression_ratio = in_memory_size / serialized_size
 
             results.append(
