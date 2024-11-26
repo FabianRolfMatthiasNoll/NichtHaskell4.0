@@ -2,27 +2,7 @@ use core::time;
 use std::{collections::HashMap, fs, io::Write, time::Instant};
 use rand::Rng;
 use serde_protobuf::value::Message;
-use serialize_rust::{data::SerializableData, datagen::{random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, messagepack::MessagepackSerializer, protobuf::ProtobufSerializer, xml::XMLSerializer}};
-
-pub fn generate_flat_int_list(size_in_bytes: usize) -> SerializableData {
-    let mut rng = rand::thread_rng();
-    SerializableData::List((0..size_in_bytes / 4).map(|_| SerializableData::Integer(rng.gen())).collect())
-}
-
-pub fn generate_flat_float_list(size_in_bytes: usize) -> SerializableData {
-    let mut rng = rand::thread_rng();
-    SerializableData::List((0..size_in_bytes / 4).map(|_| SerializableData::Float(rng.gen())).collect())
-}
-
-pub fn generate_flat_bigint_list(size_in_bytes: usize) -> SerializableData {
-    let mut rng = rand::thread_rng();
-    SerializableData::List((0..size_in_bytes / 8).map(|_| SerializableData::BigInteger(rng.gen())).collect())
-}
-
-pub fn generate_flat_bigfloat_list(size_in_bytes: usize) -> SerializableData {
-    let mut rng = rand::thread_rng();
-    SerializableData::List((0..size_in_bytes / 8).map(|_| SerializableData::BigFloat(rng.gen())).collect())
-}
+use serialize_rust::{data::SerializableData, datagen::{list, random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, messagepack::MessagepackSerializer, protobuf::ProtobufSerializer, xml::XMLSerializer}};
 
 fn format_size(bytes: usize) -> String {
     const KB: usize = 1024;
@@ -43,7 +23,63 @@ fn format_size(bytes: usize) -> String {
     }
 }
 
+fn generate_dataset_flat_intlist(size_in_bytes: usize) -> SerializableData {
+    random_list(size_in_bytes / 4, random_int)
+}
+
+fn generate_dataset_deep_flat_intlist(depth: usize, size_in_bytes: usize) -> SerializableData {
+    if depth == 0 {
+        generate_dataset_flat_intlist(size_in_bytes)
+    } else {
+        SerializableData::KeyValuePair(String::from("child"), Box::new(generate_dataset_deep_flat_intlist(depth - 1, size_in_bytes)))
+    }
+}
+
+fn generate_dataset_int_tree(depth: usize, children_per_node: usize) -> SerializableData {
+    if depth <= 0 {
+        SerializableData::List(vec![
+            SerializableData::KeyValuePair(String::from("data"), Box::new(random_int())),
+            SerializableData::KeyValuePair(String::from("children"), Box::new(SerializableData::List(Vec::new())))
+        ])
+    } else {
+        SerializableData::List(vec![
+            SerializableData::KeyValuePair(String::from("data"), Box::new(random_int())),
+            SerializableData::KeyValuePair(String::from("children"), Box::new(random_list(children_per_node, || generate_dataset_int_tree(depth - 1, children_per_node)))),
+        ])
+    }
+}
+
+fn generate_datasets() {
+    let dataset = generate_dataset_flat_intlist((2 as usize).pow(28));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_flat_intlist_256MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_flat_intlist((2 as usize).pow(23));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_flat_intlist_8MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(28));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_deep_flat_intlist_256MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(23));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_deep_flat_intlist_8MB.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_int_tree(4, 8);
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_int_tree_small.json", &serialized).unwrap();
+
+    let dataset = generate_dataset_int_tree(8, 8);
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write("../datasets/dataset_int_tree_large.json", &serialized).unwrap();
+
+}
+
 fn main() {
+
+    generate_datasets();
+    return;
 
     // "generate a list with 40 entries, each entry being either:
     // - a random i32
