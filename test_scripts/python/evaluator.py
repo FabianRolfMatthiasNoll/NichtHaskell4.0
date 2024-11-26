@@ -7,9 +7,6 @@ import datasets_pb2
 import msgpack
 from lxml import etree
 from sys import getsizeof
-import cProfile
-import pstats
-
 
 # Configuration
 DATASETS_DIR = "datasets"
@@ -60,15 +57,16 @@ def serialize_msgpack(data):
 
 
 def deserialize_msgpack(data):
-    return msgpack.unpackb(data)
+    return msgpack.unpackb(data, raw=False)
 
 
 def serialize_xml(data):
     def build_xml(element, data):
         if isinstance(data, dict):
             for k, v in data.items():
-                child = etree.SubElement(element, "item", key=k)
-                child.text = str(v)
+                child = etree.SubElement(element, "item")
+                child.set("key", k)
+                build_xml(child, v)
         elif isinstance(data, list):
             for item in data:
                 child = etree.SubElement(element, "item")
@@ -78,93 +76,76 @@ def serialize_xml(data):
 
     root = etree.Element("root")
     build_xml(root, data)
-    return etree.tostring(root, pretty_print=False, encoding="utf-8")
+    return etree.tostring(root, pretty_print=True)
 
 
 def deserialize_xml(data):
     root = etree.fromstring(data)
 
     def parse_xml(element):
-        if element.tag == "item" and "key" in element.attrib:
-            return {element.attrib["key"]: element.text}
-        elif len(element):
-            return [parse_xml(child) for child in element]
-        else:
+        if len(element):  # If element has children
+            if "key" in element.attrib:
+                return {element.attrib["key"]: parse_xml(element[0])}
+            else:
+                return [parse_xml(child) for child in element]
+        else:  # Leaf node
             return element.text
 
     return parse_xml(root)
 
 
-def serialize_nested_protobuf(data, proto_item):
-    """Recursively serialize nested data into ProtoBuf NestedData."""
-    if isinstance(data, int):
-        proto_item.int_value = data
-    elif isinstance(data, float):
-        proto_item.float_value = data
-    elif isinstance(data, str):
-        proto_item.string_value = data
-    elif isinstance(data, list):
-        for sub_item in data:
-            nested_item = proto_item.items.add()
-            serialize_nested_protobuf(sub_item, nested_item)
-
-
 def serialize_protobuf(data):
-    proto_data = datasets_pb2.MixedList()
-    for item in data:
-        serialized_item = proto_data.items.add()
-        if isinstance(item, int):
-            serialized_item.int_value = item
-        elif isinstance(item, float):
-            serialized_item.float_value = item
-        elif isinstance(item, str):
-            serialized_item.string_value = item
-        elif isinstance(item, dict):  # Key-value pairs
-            for k, v in item.items():
-                kvpair = serialized_item.kvpair_value
-                kvpair.key = k
-                if isinstance(v, bool):
-                    kvpair.bool_value = v
-                elif isinstance(v, float):
-                    kvpair.double_value = v
-                elif isinstance(v, str):
-                    kvpair.string_value = v
-        elif isinstance(item, list):  # Nested data
-            nested_item = serialized_item.nested_value
-            serialize_nested_protobuf(item, nested_item)
-    return proto_data.SerializeToString()
+    def serialize_data(data):
+        proto_data = datasets_pb2.Data()
+        if isinstance(data, bool):
+            proto_data.boolean = data
+        elif isinstance(data, int):
+            if -2147483648 <= data <= 2147483647:  # 32-bit range
+                proto_data.integer = data
+            else:
+                proto_data.big_integer = data
+        elif isinstance(data, float):
+            proto_data.float_value = data
+        elif isinstance(data, str):
+            proto_data.string_literal = data
+        elif isinstance(data, dict):
+            for k, v in data.items():
+                kvp = proto_data.key_value_pair
+                kvp.key = k
+                kvp.value.CopyFrom(serialize_data(v))
+        elif isinstance(data, list):
+            for item in data:
+                proto_data.list.elements.add().CopyFrom(serialize_data(item))
+        return proto_data
 
-
-def deserialize_nested_protobuf(proto_item):
-    """Recursively deserialize ProtoBuf NestedData."""
-    if proto_item.HasField("int_value"):
-        return proto_item.int_value
-    elif proto_item.HasField("float_value"):
-        return proto_item.float_value
-    elif proto_item.HasField("string_value"):
-        return proto_item.string_value
-    elif proto_item.HasField("nested_value"):
-        return deserialize_nested_protobuf(proto_item.nested_value)
-    else:
-        return [deserialize_nested_protobuf(item) for item in proto_item.items]
+    return serialize_data(data).SerializeToString()
 
 
 def deserialize_protobuf(data):
-    proto_data = datasets_pb2.MixedList()
+    def deserialize_data(proto_data):
+        if proto_data.HasField("boolean"):
+            return proto_data.boolean
+        elif proto_data.HasField("integer"):
+            return proto_data.integer
+        elif proto_data.HasField("big_integer"):
+            return proto_data.big_integer
+        elif proto_data.HasField("float_value"):
+            return proto_data.float_value
+        elif proto_data.HasField("string_literal"):
+            return proto_data.string_literal
+        elif proto_data.HasField("key_value_pair"):
+            return {
+                proto_data.key_value_pair.key: deserialize_data(
+                    proto_data.key_value_pair.value
+                )
+            }
+        elif proto_data.HasField("list"):
+            return [deserialize_data(element) for element in proto_data.list.elements]
+        return None
+
+    proto_data = datasets_pb2.Data()
     proto_data.ParseFromString(data)
-    result = []
-    for item in proto_data.items:
-        if item.HasField("int_value"):
-            result.append(item.int_value)
-        elif item.HasField("float_value"):
-            result.append(item.float_value)
-        elif item.HasField("string_value"):
-            result.append(item.string_value)
-        elif item.HasField("kvpair_value"):
-            result.append({item.kvpair_value.key: item.kvpair_value.string_value})
-        elif item.HasField("nested_value"):
-            result.append(deserialize_nested_protobuf(item.nested_value))
-    return result
+    return deserialize_data(proto_data)
 
 
 # Time measurement
@@ -182,8 +163,10 @@ def run_tests():
 
     # Load all JSON datasets
     dataset_files = [f for f in os.listdir(DATASETS_DIR) if f.endswith(".json")]
+    print(f"Found {len(dataset_files)} Datasets...")
     for dataset_file in dataset_files:
         dataset_path = os.path.join(DATASETS_DIR, dataset_file)
+        print(f"Loading {dataset_file}...")
         dataset = load_json_dataset(dataset_path)
         in_memory_size = get_object_size(dataset)
 
@@ -198,6 +181,8 @@ def run_tests():
             serialized_data, serialization_time = measure_time(serialize_func, dataset)
             _, deserialization_time = measure_time(deserialize_func, serialized_data)
             serialized_size = len(serialized_data)
+            print(f"Meassuring Performance of {protocol_name}...")
+            compression_ratio = in_memory_size / serialized_size
 
             results.append(
                 {
@@ -205,7 +190,7 @@ def run_tests():
                     "Protocol": protocol_name,
                     "Dataset In-Memory Size (bytes)": in_memory_size,
                     "Serialized Size (bytes)": serialized_size,
-                    "Compression Ratio": in_memory_size / serialized_size,
+                    "Compression Ratio": compression_ratio,
                     "Serialization Time (s)": serialization_time,
                     "Deserialization Time (s)": deserialization_time,
                 }
@@ -220,6 +205,4 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    cProfile.run("run_tests()", "profile_results")
-    p = pstats.Stats("profile_results")
-    p.strip_dirs().sort_stats("time").print_stats(10)
+    run_tests()

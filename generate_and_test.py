@@ -19,11 +19,11 @@ os.makedirs(DATASETS_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 
-def run_rust_generator(size):
+def run_rust_generator():
     """Run Rust dataset generator."""
-    print(f"Generating datasets of size {size} bytes...")
+    print(f"Generating datasets...")
     try:
-        subprocess.run([RUST_BINARY, str(size)], check=True)
+        subprocess.run([RUST_BINARY], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error running Rust generator: {e}")
         sys.exit(1)
@@ -59,7 +59,8 @@ def run_visualizer():
 
 def main():
 
-    run_rust_generator(1073741824)
+    run_rust_generator()
+    return
     verify_datasets()
     run_python_evaluator()
     run_visualizer()

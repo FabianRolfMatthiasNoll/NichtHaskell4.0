@@ -1,34 +1,23 @@
 syntax = "proto3";
 
-message KeyValue {
-  string key = 1;
-  oneof value {
-    bool bool_value = 2;
-    double double_value = 3;
-    string string_value = 4;
-  }
+message Data {
+    oneof value {
+        bool boolean = 1;
+        int32 integer = 2;
+        int64 big_integer = 3;
+        float float_value = 4;
+        double big_float = 5;
+        string string_literal = 6;
+        KVP key_value_pair = 7;
+        Array list = 8;
+    }
 }
 
-message NestedData {
-  oneof value {
-    int32 int_value = 1;
-    float float_value = 2;
-    string string_value = 3;
-    NestedData nested_value = 4;
-  }
-  repeated NestedData items = 5;
+message KVP {
+    string key = 1;
+    Data value = 2;
 }
 
-message MixedData {
-  oneof value {
-    int32 int_value = 1;
-    float float_value = 2;
-    string string_value = 3;
-    KeyValue kvpair_value = 4;
-    NestedData nested_value = 5;
-  }
-}
-
-message MixedList {
-  repeated MixedData items = 1;
+message Array {
+    repeated Data elements = 1;
 }
