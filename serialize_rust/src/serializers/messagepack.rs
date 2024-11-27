@@ -12,4 +12,8 @@ impl Serializer for MessagepackSerializer {
             Err(error) => Err(error.to_string()),
         }
     }
+    
+    fn deserialize(data: &[u8]) -> Result<SerializableData, String> {
+        rmp_serde::from_slice(data).map_err(|err| err.to_string())
+    }
 }

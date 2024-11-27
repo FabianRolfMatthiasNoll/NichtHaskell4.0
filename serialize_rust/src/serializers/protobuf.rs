@@ -7,4 +7,8 @@ impl Serializer for ProtobufSerializer {
         let protobuf_data: Data = Data::from(data.clone());
         Ok(protobuf_data.encode_to_vec())
     }
+    
+    fn deserialize(data: &[u8]) -> Result<SerializableData, String> {
+        SerializableData::try_from(Data::decode(data).map_err(|err| err.to_string())?)
+    }
 }
