@@ -24,17 +24,31 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tasets.proto\"\xca\x01\n\x04\x44\x61ta\x12\x11\n\x07\x62oolean\x18\x01 \x01(\x08H\x00\x12\x11\n\x07integer\x18\x02 \x01(\x05H\x00\x12\x15\n\x0b\x62ig_integer\x18\x03 \x01(\x03H\x00\x12\x15\n\x0b\x66loat_value\x18\x04 \x01(\x02H\x00\x12\x13\n\tbig_float\x18\x05 \x01(\x01H\x00\x12\x18\n\x0estring_literal\x18\x06 \x01(\tH\x00\x12\x1e\n\x0ekey_value_pair\x18\x07 \x01(\x0b\x32\x04.KVPH\x00\x12\x16\n\x04list\x18\x08 \x01(\x0b\x32\x06.ArrayH\x00\x42\x07\n\x05value\"(\n\x03KVP\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x14\n\x05value\x18\x02 \x01(\x0b\x32\x05.Data\" \n\x05\x41rray\x12\x17\n\x08\x65lements\x18\x01 \x03(\x0b\x32\x05.Datab\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tasets.proto\"\x1d\n\x0b\x46latIntList\x12\x0e\n\x06values\x18\x01 \x03(\x05\"\x1f\n\rFlatFloatList\x12\x0e\n\x06values\x18\x01 \x03(\x02\"\xce\x01\n\x0f\x44\x65\x65pFlatIntList\x12#\n\x04root\x18\x01 \x01(\x0b\x32\x15.DeepFlatIntList.Node\x1a\x95\x01\n\x04Node\x12&\n\x05\x63hild\x18\x01 \x01(\x0b\x32\x15.DeepFlatIntList.NodeH\x00\x12\x35\n\nvalue_list\x18\x02 \x01(\x0b\x32\x1f.DeepFlatIntList.Node.ValueListH\x00\x1a\x1b\n\tValueList\x12\x0e\n\x06values\x18\x01 \x03(\x05\x42\x11\n\x0f\x63hild_or_values\"\xd6\x01\n\x11\x44\x65\x65pFlatFloatList\x12%\n\x04root\x18\x01 \x01(\x0b\x32\x17.DeepFlatFloatList.Node\x1a\x99\x01\n\x04Node\x12(\n\x05\x63hild\x18\x01 \x01(\x0b\x32\x17.DeepFlatFloatList.NodeH\x00\x12\x37\n\nvalue_list\x18\x02 \x01(\x0b\x32!.DeepFlatFloatList.Node.ValueListH\x00\x1a\x1b\n\tValueList\x12\x0e\n\x06values\x18\x01 \x03(\x02\x42\x11\n\x0f\x63hild_or_values\"]\n\x07IntTree\x12\x1b\n\x04root\x18\x01 \x01(\x0b\x32\r.IntTree.Node\x1a\x35\n\x04Node\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x05\x12\x1f\n\x08\x63hildren\x18\x02 \x03(\x0b\x32\r.IntTree.Nodeb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'datasets_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_DATA']._serialized_start=19
-  _globals['_DATA']._serialized_end=221
-  _globals['_KVP']._serialized_start=223
-  _globals['_KVP']._serialized_end=263
-  _globals['_ARRAY']._serialized_start=265
-  _globals['_ARRAY']._serialized_end=297
+  _globals['_FLATINTLIST']._serialized_start=18
+  _globals['_FLATINTLIST']._serialized_end=47
+  _globals['_FLATFLOATLIST']._serialized_start=49
+  _globals['_FLATFLOATLIST']._serialized_end=80
+  _globals['_DEEPFLATINTLIST']._serialized_start=83
+  _globals['_DEEPFLATINTLIST']._serialized_end=289
+  _globals['_DEEPFLATINTLIST_NODE']._serialized_start=140
+  _globals['_DEEPFLATINTLIST_NODE']._serialized_end=289
+  _globals['_DEEPFLATINTLIST_NODE_VALUELIST']._serialized_start=243
+  _globals['_DEEPFLATINTLIST_NODE_VALUELIST']._serialized_end=270
+  _globals['_DEEPFLATFLOATLIST']._serialized_start=292
+  _globals['_DEEPFLATFLOATLIST']._serialized_end=506
+  _globals['_DEEPFLATFLOATLIST_NODE']._serialized_start=353
+  _globals['_DEEPFLATFLOATLIST_NODE']._serialized_end=506
+  _globals['_DEEPFLATFLOATLIST_NODE_VALUELIST']._serialized_start=460
+  _globals['_DEEPFLATFLOATLIST_NODE_VALUELIST']._serialized_end=487
+  _globals['_INTTREE']._serialized_start=508
+  _globals['_INTTREE']._serialized_end=601
+  _globals['_INTTREE_NODE']._serialized_start=548
+  _globals['_INTTREE_NODE']._serialized_end=601
 # @@protoc_insertion_point(module_scope)
