@@ -74,7 +74,7 @@ fn generate_datasets() {
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_deep_flat_intlist_256MB.json", &serialized).unwrap(); */
 
-    let dataset = generate_dataset_deep_flat_intlist(100, (2 as usize).pow(28));
+    let dataset = generate_dataset_deep_flat_intlist(50, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_not_so_deep_flat_intlist_256MB.json", &serialized).unwrap();
 
@@ -82,7 +82,7 @@ fn generate_datasets() {
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_deep_flat_intlist_8MB.json", &serialized).unwrap(); */
 
-    let dataset = generate_dataset_deep_flat_intlist(100, (2 as usize).pow(23));
+    let dataset = generate_dataset_deep_flat_intlist(50, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_not_so_deep_flat_intlist_8MB.json", &serialized).unwrap();
 
@@ -98,7 +98,7 @@ fn generate_datasets() {
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_deep_flat_floatlist_256MB.json", &serialized).unwrap(); */
 
-    let dataset = generate_dataset_deep_flat_floatlist(100, (2 as usize).pow(28));
+    let dataset = generate_dataset_deep_flat_floatlist(50, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_not_so_deep_flat_floatlist_256MB.json", &serialized).unwrap();
 
@@ -106,7 +106,7 @@ fn generate_datasets() {
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_deep_flat_floatlist_8MB.json", &serialized).unwrap(); */
 
-    let dataset = generate_dataset_deep_flat_floatlist(100, (2 as usize).pow(23));
+    let dataset = generate_dataset_deep_flat_floatlist(50, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
     std::fs::write("./datasets/dataset_not_so_deep_flat_floatlist_8MB.json", &serialized).unwrap();
 
