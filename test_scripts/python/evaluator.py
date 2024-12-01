@@ -12,7 +12,9 @@ from sys import getsizeof
 # Configuration
 DATASETS_DIR = "datasets"
 OUTPUT_DIR = "serialization_test_results"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "results.json")
 XML_THRESHOLD_MB = 100
+REPEATS = 10  # Number of repetitions per test
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
@@ -242,17 +244,26 @@ def measure_time(func, *args):
     return result, end - start
 
 
+# Append results to file
+def append_to_file(filepath, data):
+    with open(filepath, "a") as f:
+        f.write(json.dumps(data, indent=2) + "\n")
+
+
 def run_tests():
+    # Write system info at the beginning
     system_info = get_system_info()
-    results = []
+    with open(OUTPUT_FILE, "w") as f:
+        f.write(json.dumps({"system_info": system_info}, indent=2) + "\n")
 
     # Load all JSON datasets
     dataset_files = [f for f in os.listdir(DATASETS_DIR) if f.endswith(".json")]
-    print(f"Found {len(dataset_files)} Datasets...")
+    file_amount = len(dataset_files)
+    print(f"Found {file_amount} Datasets...")
 
-    for dataset_file in dataset_files:
+    for i, dataset_file in enumerate(dataset_files):
         dataset_path = os.path.join(DATASETS_DIR, dataset_file)
-        print(f"Loading {dataset_file}...")
+        print(f"[{i+1}|{file_amount}]Loading {dataset_file}")
         dataset = load_json_dataset(dataset_path)
         in_memory_size = get_object_size(dataset)
         dataset_size_mb = in_memory_size / math.pow(1024, 2)
@@ -285,7 +296,7 @@ def run_tests():
             continue
 
         protocols = [
-            ("JSON", serialize_json, deserialize_json, ".json"),
+            ("JSON", serialize_json, deserialize_json),
             (
                 "XML",
                 lambda data: serialize_xml(
@@ -304,45 +315,58 @@ def run_tests():
                     ),
                     xml_data=data if dataset_size_mb <= XML_THRESHOLD_MB else None,
                 ),
-                ".xml",
             ),
-            ("MessagePack", serialize_msgpack, deserialize_msgpack, ".msgpack"),
-            ("ProtoBuf", serialize_func, deserialize_func, ".pb"),
+            ("MessagePack", serialize_msgpack, deserialize_msgpack),
+            ("ProtoBuf", serialize_func, deserialize_func),
         ]
 
-        for protocol_name, serialize_func, deserialize_func, file_ext in protocols:
-            print(f"Measuring Performance of {protocol_name}...")
-            print("Serializing...")
-            serialized_data, serialization_time = measure_time(serialize_func, dataset)
-            """ print(f"Serialized data size: {len(serialized_data)}")
-            print(f"Serialized data (raw): {serialized_data[:100]}") """
-            print("Deserializing...")
-            _, deserialization_time = measure_time(deserialize_func, serialized_data)
-            serialized_size = (
-                os.path.getsize(f"{OUTPUT_DIR}/temp.xml")
-                if protocol_name == "XML" and dataset_size_mb > XML_THRESHOLD_MB
-                else len(serialized_data)
-            )
-            compression_ratio = in_memory_size / serialized_size
+        for protocol_name, serialize_func, deserialize_func in protocols:
+            print(f"Testing {protocol_name}...")
+            serialization_times = []
+            deserialization_times = []
+            sizes = []
 
-            results.append(
-                {
-                    "Dataset": dataset_file,
-                    "Protocol": protocol_name,
-                    "Dataset In-Memory Size (bytes)": in_memory_size,
-                    "Serialized Size (bytes)": serialized_size,
-                    "Compression Ratio": compression_ratio,
-                    "Serialization Time (s)": serialization_time,
-                    "Deserialization Time (s)": deserialization_time,
-                }
-            )
+            for i in range(REPEATS):
+                print(f"[{i+1}|{REPEATS}] Serialisation")
+                # Measure serialization
+                serialized_data, serialization_time = measure_time(
+                    serialize_func, dataset
+                )
+                serialization_times.append(serialization_time)
 
-    # Save results
-    results_path = os.path.join(OUTPUT_DIR, "results.json")
-    with open(results_path, "w") as f:
-        json.dump({"system_info": system_info, "results": results}, f, indent=2)
+                print(f"[{i+1}|{REPEATS}] Deserialisation")
+                # Measure deserialization
+                _, deserialization_time = measure_time(
+                    deserialize_func, serialized_data
+                )
+                deserialization_times.append(deserialization_time)
 
-    print(f"Results saved to {results_path}")
+                # Measure size
+                if protocol_name == "XML" and dataset_size_mb > XML_THRESHOLD_MB:
+                    sizes.append(os.path.getsize(f"{OUTPUT_DIR}/temp.xml"))
+                else:
+                    sizes.append(len(serialized_data))
+
+            # Calculate averages
+            avg_serialization_time = sum(serialization_times) / REPEATS
+            avg_deserialization_time = sum(deserialization_times) / REPEATS
+            avg_size = sum(sizes) / REPEATS
+            compression_ratio = in_memory_size / avg_size
+
+            # Append results
+            result = {
+                "Dataset": dataset_file,
+                "Protocol": protocol_name,
+                "Dataset In-Memory Size (bytes)": in_memory_size,
+                "Average Serialized Size (bytes)": avg_size,
+                "Compression Ratio": compression_ratio,
+                "Average Serialization Time (s)": avg_serialization_time,
+                "Average Deserialization Time (s)": avg_deserialization_time,
+            }
+            append_to_file(OUTPUT_FILE, result)
+            print(f"Result appended for {protocol_name}")
+
+    print(f"All results saved to {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":
