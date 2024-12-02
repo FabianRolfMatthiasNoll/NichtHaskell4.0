@@ -52,13 +52,35 @@ Nichtbinäre Formate wie XML oder JSON speichern Daten in einem textbasierten, m
 
 In Bezug auf den Einsatzbereich sind binäre Formate aufgrund ihrer Effizienz und hohen Geschwindigkeit in Bereichen wie Embedded Systems, Kommunikationsprotokollen und Cloud-basierten Diensten weit verbreitet. Nichtbinäre Formate hingegen finden häufig in Bereichen Anwendung, in denen eine einfache Handhabung und schnelle Lesbarkeit durch Menschen wichtiger sind als die absolute Performance, wie z.B. bei Datenübertragungen im Web oder bei einfachen Konfigurationsdateien. Während binäre Formate eine bessere Performance und Speicheroptimierung bieten, sind textbasierte Formate flexibler und einfacher in der Nutzung und im Austausch.
 
-% und schon der letzte Abschnitt
+\newpage
+
 \section{State of the Art Vergleiche}
 
 \section{Kriterien}
-%Nur zum Testen der Länge vorhanden
-\newpage
+
+Zum Vergleich von Serialisierungsverfahren ist die Auswahl geeigneter Metriken entscheidend, um fundierte und vergleichbare Ergebnisse zu erzielen. Die folgenden Metriken wurden festgesetzt und mit Fachliteratur abgeglichen und bieten eine umfassende Grundlage für den Vergleich:
+
+\textbf{Serialisierungszeit}\newline
+Diese Metrik misst die Zeit, die benötigt wird, um Datenstrukturen in ein spezifisches Format zu konvertieren. Eine geringere Serialisierungszeit kann die Effizienz von Anwendungen erhöhen, insbesondere in zeitkritischen Systemen. Die Messung erfolgt durch Zeitstempel vor und nach dem Serialisierungsprozess, wobei die Differenz die benötigte Zeit ergibt.
+
+\textbf{Deserialisierungszeit}\newline
+Sie erfasst die Dauer, die erforderlich ist, um serialisierte Daten zurück in ihre ursprüngliche Struktur zu überführen. Eine schnelle Deserialisierung ist essenziell für Anwendungen, die zügig auf gespeicherte oder übertragene Daten zugreifen müssen. Die Messmethodik entspricht derjenigen der Serialisierungszeit, mit Fokus auf den Deserialisierungsprozess.
+
+\textbf{Kompressionsrate}\newline
+Sie gibt das Verhältnis der Größe der originalen Daten zur Größe der serialisierten Daten an. Eine höhere Kompressionsrate reduziert den Speicherbedarf und die Bandbreitennutzung, was besonders in ressourcenbeschränkten Umgebungen von Vorteil ist. Die Berechnung erfolgt durch Division der Größe der ursprünglichen Daten durch die Größe der serialisierten Daten.
+
+\textbf{Implementierungsgüte}\newline
+Hierbei wird untersucht, wie die Performance der Serialisierungsverfahren in verschiedenen Programmiersprachen variiert. Unterschiede in der Implementierung können signifikante Auswirkungen auf die Effizienz haben, weshalb Tests in Sprachen wie Rust und Python aufschlussreich sind. Die Messung erfolgt durch Vergleich der gemessenen Metriken über verschiedene Implementierungen hinweg.
+
+\textbf{Nutzbarkeit/Wartbarkeit}\newline
+Diese qualitative Metrik bewertet, wie einfach ein Serialisierungsverfahren zu implementieren, zu nutzen und zu warten ist. Aspekte wie Dokumentation, Community-Unterstützung und die Komplexität der Integration spielen hierbei eine Rolle. Die Bewertung erfolgt durch Experteneinschätzungen und Benutzerfeedback.
+
+\textbf{Ressourcenverbrauch}\newline
+Diese Metrik misst die Nutzung von Systemressourcen wie CPU, Speicher und, falls relevant, auch Energie während der Serialisierungs- und Deserialisierungsprozesse. Ein effizienter Ressourcenverbrauch ist entscheidend, insbesondere in Umgebungen mit begrenzten Systemressourcen, wie eingebetteten Systemen oder IoT-Geräten. Diese Metrik wird einfacher bewertet in Bezug auf Probleme oder limitationen die sich während der Testreihen kristallisiert haben.
+
 \section{Die Serialisierungsformate}
+
+Im folgenden Abschnitt wird die Auswahl der zu vergleichenden Formate erläutert als auch die ausgewählten Formate in einer kurzen Zusammenfassung vorgestellt.
 
 \subsection{Begründung der Formatwahl}
 
@@ -71,8 +93,7 @@ Die Auswahl der Formate JSON, XML, Protocol Buffers und MessagePack erfolgte auf
 \textbf{Protocol Buffers} wurden aufgrund ihrer hohen Effizienz und der Fähigkeit, komplexe Datenstrukturen zu serialisieren, ausgewählt. Sie sind ideal für leistungsorientierte Anwendungen, in denen Geschwindigkeit und geringer Speicherbedarf entscheidend sind, wie bei der Kommunikation zwischen Microservices oder in mobilen Anwendungen.
 
 \textbf{MessagePack} ergänzt die Auswahl durch seine Effizienz in der Datenspeicherung und -übertragung, was es zu einer ausgezeichneten Wahl für ressourcenbeschränkte Umgebungen macht. Diese Diversität an Formaten ermöglicht es, verschiedene Szenarien optimal abzudecken, von einfacher Web-Kommunikation bis hin zu hochperformanten, ressourcenoptimierten Anwendungen.
-%Nur zum Testen der Länge vorhanden
-\newpage 
+
 \subsection{Vorstellung der Formate}
 
 \textbf{JSON (JavaScript Object Notation)}
@@ -88,6 +109,36 @@ XML ist ein textbasiertes Format, das entwickelt wurde, um Daten in einer strukt
 Protobuf ist ein binäres Serialisierungsformat, das von Google entwickelt wurde, um effiziente und schnelle Datenübertragung zu ermöglichen. Es zeichnet sich durch seine geringe Größe und hohe Geschwindigkeit bei der Serialisierung und Deserialisierung aus. Im Gegensatz zu XML ist Protobuf nicht direkt menschenlesbar, benötigt aber eine vordefinierte Schema-Datei (".proto"), um Daten zu interpretieren. Dieses Format ist ideal für Systeme, bei denen Leistung und Platzbedarf entscheidend sind, z.B. in Microservices und Netzwerkprotokollen.
 
 \section{Vergleichsmethodik}
+
+\subsection{Genereller Ansatz}
+
+\subsection{Python}
+
+Die Tests wurden in einem strukturierten und standardisierten Ablauf durchgeführt, wobei spezifische Anpassungen vorgenommen wurden, um die Besonderheiten der getesteten Serialisierungsverfahren zu berücksichtigen. Jeder der generierten Datensätze wurde zunächst geladen und seine Größe im Speicher erfasst, um später als Referenz für die Berechnung der Kompressionsrate zu dienen. Anschließend wurden die Serialisierungs- und Deserialisierungszeiten sowie die resultierende Größe der serialisierten Daten für jede Technologie (JSON, XML, MessagePack und Protocol Buffers) gemessen.
+
+Für XML wurde aufgrund des hohen Speicherverbrauchs bei der Verarbeitung größerer Datensätze ein optimiertes Streamingverfahren eingesetzt. Bei diesem Ansatz wird der Datensatz nicht vollständig im Speicher gehalten, sondern schrittweise verarbeitet. Die XML-Daten werden dabei durch eine rekursive Generierung einzelner XML-Elemente Stück für Stück erzeugt und direkt in eine Datei geschrieben. Dieser Mechanismus nutzt einen sogenannten Generator, der jeweils kleine Teile des XML-Dokuments erzeugt, diese sofort ausgibt und sie anschließend aus dem Speicher entfernt. Dadurch wird der Speicherbedarf unabhängig von der Größe des Datensatzes auf ein Minimum reduziert. Dieses Verfahren ermöglicht es, auch extrem große Datensätze zu serialisieren, ohne den verfügbaren Arbeitsspeicher zu überlasten. Es bildet gleichzeitig typische Anwendungsfälle in realen datenintensiven Szenarien ab, bei denen Ressourcen effizient genutzt werden müssen.
+
+Protocol Buffers (Protobuf) erhielt ebenfalls spezifische Implementierungen für jede Datensatzart. Diese Maßnahme war notwendig, da eine generische Behandlung in Protobuf zu schlechten Ergebnissen führt, die die tatsächlichen Stärken des Formats nicht widerspiegeln. Mit maßgeschneiderten Protobuf-Definitionen und entsprechenden Serialisierungs- und Deserialisierungsfunktionen konnte eine realistischere Bewertung vorgenommen werden, die den praxisnahen Einsatz des Formats besser abbildet.
+
+Zusätzlich wurde die Hardwareumgebung detailliert protokolliert, um die Ergebnisse im Kontext der zugrunde liegenden Systemressourcen bewerten zu können. Erfasst wurden dabei unter anderem CPU-Modell, Anzahl der logischen Kerne, verfügbare Arbeitsspeicherkapazität und Betriebssystem. Diese Informationen sind wichtig, da sie maßgeblich die Leistung der Serialisierungsverfahren beeinflussen können. Durch die Dokumentation der Hardwarebedingungen wird die Reproduzierbarkeit der Ergebnisse gewährleistet und es können eventuelle Abweichungen bei Tests auf anderen Systemen besser nachvollzogen werden.
+
+Die Tests wurden für jede Kombination aus Datensatz, Technologie und Implementierung über mehrere Wiederholungen durchgeführt, um statistische Schwankungen zu minimieren. Die Ergebnisse, einschließlich aller gemessenen Metriken, wurden in einer strukturierten JSON-Ausgabe gespeichert.
+
+\subsubsection{Probleme und Limitationen}
+
+Ein wesentliches Problem bei den Messungen war die ineffiziente Datenhaltung in Python. Diese führte dazu, dass ein 680 MB großer JSON-Datensatz im Speicher etwa 2 GB beanspruchte, was die Effizienz der Tests erheblich beeinträchtigte.
+
+Zudem stellten die Implementierungen von Protobuf und XML besondere Herausforderungen dar. Insbesondere XML war aufgrund seines hohen Speicherverbrauchs problematisch. Für einige Datensätze, wie den oben erwähnten JSON-Datensatz, benötigte die XML-Serialisierung teilweise über 30 GB Arbeitsspeicher. Diese Anforderungen führten dazu, dass XML für problematische Datensätze nicht getestet wurde, da die Tests oft unvorhersehbar fehlschlugen. Selbst wenn die Serialisierung funktionierte, betrugen die Laufzeiten mit der Streaming-Variante für große Datensätze häufig mehr als 10 Minuten, was die Tests unpraktikabel machte.
+
+Protobuf brachte ebenfalls spezifische Schwierigkeiten mit sich. Die ineffiziente Datenhaltung in Python, kombiniert mit dessen vergleichsweise langsamer Programmausführungszeit, machte es notwendig, für jeden Datensatz spezifische Protobuf-Implementierungen zu entwickeln, um eine faire Vergleichsbasis zu schaffen. Die generische Implementierung verursachte aufgrund des hohen Sprach-Overheads erheblichen Ressourcenverbrauch und lange Ausführungszeiten, sodass Protobuf in diesen Fällen sogar von XML in Effizienz und Performance übertroffen wurde.
+
+Ein weiteres Problem betrifft die Limitierungen von Python selbst. Bei JSON-Strukturen mit einer Tiefe von mehr als 100 Ebenen führten die zahlreichen Rekursionsaufrufe dazu, dass Python die Verarbeitung mit einem Fehler abbrach. Dieses Problem ließ sich nicht durch eine Erhöhung der maximalen Rekursionstiefe beheben. Ähnliche Probleme traten auch bei Protobuf auf, das mit Datenstrukturen, die mehr als 50 Ebenen tief waren, nicht korrekt umgehen konnte. In diesen Fällen war die Serialisierung fehlerhaft, und die Deserialisierung konnte nicht erfolgreich abgeschlossen werden.
+
+Einzig und allein MessagePack war ein Protokoll das keine Limitationen oder Probleme aufwies.
+
+Diese Einschränkungen zeigen die praktischen Herausforderungen bei der Verwendung von Python und bestimmten Serialisierungsformaten in ressourcenintensiven Szenarien auf. Sie unterstreichen die Bedeutung einer angepassten Implementierung und realistischen Bewertung der Verfahren unter Berücksichtigung ihrer spezifischen Eigenheiten.
+
+
 
 \section{Ergebnisauswertung}
 
