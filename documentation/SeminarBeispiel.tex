@@ -3,7 +3,7 @@
 % Beispiel für ein LaTeX-Dokument im Format "seminarvorlage"
 \documentclass[ngerman]{seminarvorlage}
 % ngerman = Deutsch in neuer Rechtschreibung, alternativ english
-\usepackage{babel} % automatische Sprachunterstützung
+\usepackage{babel}[german] % automatische Sprachunterstützung
 
 \usepackage[utf8]{inputenc} % Kodierung der Non-ASCII-Zeichen
 \usepackage[T1]{fontenc} % Moderne Fonts, Trennung von Wörtern mit Umlauten
@@ -51,6 +51,76 @@ Binäre und nichtbinäre Serialisierungsformate unterscheiden sich grundlegend i
 Nichtbinäre Formate wie XML oder JSON speichern Daten in einem textbasierten, menschenlesbaren Format. Ein klarer Vorteil ist die einfache Lesbarkeit und Bearbeitbarkeit, da Entwickler und Nutzer ohne spezielle Software die Inhalte direkt inspizieren und ändern können. Diese Eigenschaft macht sie besonders geeignet für Konfigurationsdateien, Datenformate, die von Menschen überprüft werden müssen, oder APIs, bei denen Klarheit und Transparenz im Vordergrund stehen. Der Nachteil liegt in der ineffizienteren Speichernutzung und der geringeren Performanz, da diese Formate mehr Speicherplatz benötigen und der Parsing-Prozess langsamer ist als bei binären Formaten. XML zum Beispiel erzeugt durch seine umfangreichen Tags oft eine größere Datenmenge, während JSON kompakter ist, aber dennoch die Nachteile von Textformaten teilt.
 
 In Bezug auf den Einsatzbereich sind binäre Formate aufgrund ihrer Effizienz und hohen Geschwindigkeit in Bereichen wie Embedded Systems, Kommunikationsprotokollen und Cloud-basierten Diensten weit verbreitet. Nichtbinäre Formate hingegen finden häufig in Bereichen Anwendung, in denen eine einfache Handhabung und schnelle Lesbarkeit durch Menschen wichtiger sind als die absolute Performance, wie z.B. bei Datenübertragungen im Web oder bei einfachen Konfigurationsdateien. Während binäre Formate eine bessere Performance und Speicheroptimierung bieten, sind textbasierte Formate flexibler und einfacher in der Nutzung und im Austausch.
+
+\subsection{Serialisierung vs. Komprimierung}
+
+
+
+\subsection{Theoretisch optimale Serialisierung}
+
+Jedes Serialisierungsformat hat ein unteres Limit bezüglich des benötigten Speicherplatzes eines serialisierten Datensatzes. Für diese Betrachtung werden folgende Datentypen angenommen: 
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|} 
+  \hline
+  Datentyp  & Wertebereich               & Arbeitsspeicher                    \\ 
+  \hline
+  i32         & $-\left(2^{31}-1\right)$ bis $2^{31}$  & 32 Bits              \\
+  f32         & $\pm 10^{38}$              & 32 Bits                          \\
+  boolean     & {[}true, false]            & 8 Bits                           \\
+  $string_n$  & $[0, 1114112]^n$           & $8 \cdot n \leq 32 \cdot n$ Bits \\
+  \hline
+  \end{tabular}
+\end{table}
+
+Die aufgeführten Größen sind in vielen gängigen Programmiersprachen vertreten (C, C++, Java, Rust). Bei Zeichenketten wird von einer UTF-8 kompatiblen Implementation ausgegangen. Moderne Programmiersprachen unterstützen die effizientere Darstellung von mehreren Booleans in einem Byte. Da dies aber nicht in jeder Sprache der Fall ist, wird diese Optimierung nicht berücksichtigt.
+
+Unabhängig vom Serialisierungsformat muss verarbeitende Software wissen, welche Struktur die Daten haben. Diese Struktur kann entweder durch die Syntax des Serialisierungsformats vorgegeben oder durch andere Mechanismen definiert werden. JSON und Protobuf sind jeweils Beispiele für beide Mechanismen. Da JSON ein text-basiertes, nichtbinäres Format ist, ist die Typzugehörigkeit aus dem serialisierten Datum ersichtlich. Die Definition der Syntax von JSON garantiert, dass die Wertebereiche der Datentypen sich nicht überschneiden. Protobuf hat diese Metainformation grundsätzlich nicht, da es auf ``rohen'' binären Datensätzen arbeitet. Die Grenzen sowie die Datentypen der einzelnen Serialisierten Feldern können nicht aus dem Datensatz gewonnen werden. Daher benötigt Protobuf eine externe Datei, die die Struktur der Datensätze beschreibt. Da diese \texttt{.proto} Dateien vergleichsweise klein sind (wenige kB), werden sie bei dieser Betrachtung vernachlässigt. Wird keine solche externe Strukturdefinition verwendet, ist es notwendig, durch festgelegte Zeichenketten, auch ``Delimiter'' genannt, die Grenzen der Datenfelder kennzuzeichnen.
+
+\subsubsection{Binäre Formate}
+
+In binären Formaten werden die primitiven Datentypen effizient abgebildet, da die serialisierte bereits der deserialisierten Form entspricht. Angenommen, die Struktur wird durch eine externe Definition gegeben, entsteht kein Overhead im Vergleich zur nativen Repräsentation im Arbeitsspeicher. Allerdings kann es notwendig sein, die Endianness bei der Serialisierung zu verändern, was keinen Einfluss auf die Größe des Datums hat.
+
+\subsubsection{Nichtbinäre Formate}
+
+Bei nichtbinären Formaten muss eine Transformation zwischen der binären und der textuellen Form der Daten vorgenommen werden. Für diese Transformation gilt:
+
+$$ M_{\text{textuell}} \geq M_{\text{binär}} $$
+
+Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine solche Transformation, da sie direkt übernommen werden können. Viele Serialisierungsformate benötigen allerdings Delimiter, um den Anfang und das Ende des Strings anzuzeigen. Zusätzlich kann es notwendig sein, im Format als Steuerzeichen verwendete Zeichen zu modifizieren, damit sie von den Steuerzeichen unterscheidbar bleiben. Viele Formate verwenden dazu z.B das Präfix `\\' oder `/'.
+
+Die minimale Größe eines einzelnen Zeichens sind 8 Bits. Daraus folgt, dass auch Booleans mindestens mit einem Zeichen repräsentiert werden. Daher gilt auch für Booleans $ M_{\text{textuell}} \geq M_{\text{binär}} $. Viele Formate verwenden die Literale ``true'' und ``false'', um die Lesbarkeit zu erhöhen. Angenommen, beide Werte treten gleich häufig auf, wird die Effizienz damit um den Faktor $\frac{4 + 5}{2} = 4.5$ gesenkt.
+
+Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung im Wertebereich angenommen. Zur Berechnung der durchschnittlichen Länge eines solchen Integers muss zunächst die durchschnittliche Anzahl der Dezimalstellen erfasst werden. Die Anzahl der Ganzzahlen mit n Stellen ist durch $10^n$ gegeben. Allerdings werden hierbei führende Nullen nicht berücksichtigt.Folgende Tabelle zeigt die tatsächliche Verteilung der positiven Ganzzahlen:
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|l|} 
+  \hline
+  \textbf{Untere Grenze} & \textbf{Obere Grenze} & \textbf{Anzahl} & \textbf{Dezimalstellen}  \\ 
+  \hline
+  0                      & 9                     & 10              & 1                        \\
+  10                     & 99                    & 90              & 2                        \\
+  100                    & 999                   & 900             & 3                        \\
+  1000                   & 9999                  & 9000            & 4                        \\
+  10000                  & 99999                 & 90000           & 5                        \\
+  100000                 & 999999                & 900000          & 6                        \\
+  1000000                & 9999999               & 9000000         & 7                        \\
+  10000000               & 99999999              & 90000000        & 8                        \\
+  100000000              & 999999999             & 900000000       & 9                        \\
+  1000000000             & 2147483648            & 1147483649      & 10                       \\
+  \hline
+  \end{tabular}
+\end{table}
+
+Das arithmetische Mittel der Länge wird wie folgt berechnet:
+
+$$\frac{\sum_{i=1}^{10} Anzahl(i) * Dezimalstellen(i)}{2^{31}} \approx 9.4826$$
+
+Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte repräsentiert werden, sind die durchschnittliche Anzahl an Dezimalstellen und der durchschnittliche Speicherverbrauch der gleichen Zahl identisch. ALlerdings führt die Tabelle nur die positiven Zahlen auf. Negative Zahlen werden üblicherweise über das vorangestellte Symbol `-' deklariert. Da der Zahlenraum der positiven und negativen Zahlen nahezu gleich groß sind, ergibt sich daraus eine durchschnittliche Erhöhung der Länge um 0.5 Zeichen. Somit ist die durchschnittliche Länge eines textuell serialisierten 32-Bit Integers 9.9826 Byte. Da ein nativer Integer in nur 4 Bytes repräsentiert wird, ist die textuelle Repräsentation im Durchschnitt um 149.56\% größer. Somit gilt auch für Integer $ M_{\text{textuell}} \geq M_{\text{binär}} $.
+
+Ähnliche Berechnungen sind auch für Fließkommazahlen möglich, allerdings ist die Repräsentation, im Gegensatz zu den Ganzzahlen, implementationsabhängig. Dabei gibt es verschiedene Merkmale, die festlegen, ab wann die wissenschaftliche Notation verwendet wird. Allerdings lässt bereits der enorme abbildbare Zahlenraum von $\pm10^{38}$ darauf schließen, dass die benötigte Anzahl an Dezimalstellen die der Ganzzahlen weit übersteigt. Zusätzliche Zeichen und Zeichenketten, wie etwa der Dezimalpunkt oder der Exponent in der wissenschaftlichen Notation erhöhen die Anzahl der benötigten Zeichen zusätzlich.
 
 \newpage
 
