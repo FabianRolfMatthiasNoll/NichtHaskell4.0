@@ -88,7 +88,7 @@ Bei nichtbinären Formaten muss eine Transformation zwischen der binären und de
 
 $$ M_{\text{textuell}} \geq M_{\text{binär}} $$
 
-Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine solche Transformation, da sie direkt übernommen werden können. Viele Serialisierungsformate benötigen allerdings Delimiter, um den Anfang und das Ende des Strings anzuzeigen. Zusätzlich kann es notwendig sein, im Format als Steuerzeichen verwendete Zeichen zu modifizieren, damit sie von den Steuerzeichen unterscheidbar bleiben. Viele Formate verwenden dazu z.B das Präfix `\\' oder `/'.
+Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine solche Transformation, da sie direkt übernommen werden können. Viele Serialisierungsformate benötigen allerdings Delimiter, um den Anfang und das Ende des Strings anzuzeigen. Zusätzlich kann es notwendig sein, im Format als Steuerzeichen verwendete Zeichen zu modifizieren, damit sie von den Steuerzeichen unterscheidbar bleiben. Viele Formate verwenden dazu z.B. das Präfix `\\' oder `/'.
 
 Die minimale Größe eines einzelnen Zeichens sind 8 Bits. Daraus folgt, dass auch Booleans mindestens mit einem Zeichen repräsentiert werden. Daher gilt auch für Booleans $ M_{\text{textuell}} \geq M_{\text{binär}} $. Viele Formate verwenden die Literale ``true'' und ``false'', um die Lesbarkeit zu erhöhen. Angenommen, beide Werte treten gleich häufig auf, wird die Effizienz damit um den Faktor $\frac{4 + 5}{2} = 4.5$ gesenkt.
 
@@ -182,11 +182,24 @@ Protobuf ist ein binäres Serialisierungsformat, das von Google entwickelt wurde
 
 \subsection{Genereller Ansatz}
 
-\subsection{Python}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Name} & \textbf{Version} \\ \hline
+    Python        & 3.12             \\ \hline
+    ijson         & 3.3.0            \\ \hline
+    lxml          & 5.3.0            \\ \hline
+    msgpack       & 1.1.0            \\ \hline
+    protobuf      & 5.28.3           \\ \hline
+    \end{tabular}
+    \caption{Verwendete Technologien der Messreihe}
+\end{table}
 
 Die Tests wurden in einem strukturierten und standardisierten Ablauf durchgeführt, wobei spezifische Anpassungen vorgenommen wurden, um die Besonderheiten der getesteten Serialisierungsverfahren zu berücksichtigen. Jeder der generierten Datensätze wurde zunächst geladen und seine Größe im Speicher erfasst, um später als Referenz für die Berechnung der Kompressionsrate zu dienen. Anschließend wurden die Serialisierungs- und Deserialisierungszeiten sowie die resultierende Größe der serialisierten Daten für jede Technologie (JSON, XML, MessagePack und Protocol Buffers) gemessen.
 
-Für XML wurde aufgrund des hohen Speicherverbrauchs bei der Verarbeitung größerer Datensätze ein optimiertes Streamingverfahren eingesetzt. Bei diesem Ansatz wird der Datensatz nicht vollständig im Speicher gehalten, sondern schrittweise verarbeitet. Die XML-Daten werden dabei durch eine rekursive Generierung einzelner XML-Elemente Stück für Stück erzeugt und direkt in eine Datei geschrieben. Dieser Mechanismus nutzt einen sogenannten Generator, der jeweils kleine Teile des XML-Dokuments erzeugt, diese sofort ausgibt und sie anschließend aus dem Speicher entfernt. Dadurch wird der Speicherbedarf unabhängig von der Größe des Datensatzes auf ein Minimum reduziert. Dieses Verfahren ermöglicht es, auch extrem große Datensätze zu serialisieren, ohne den verfügbaren Arbeitsspeicher zu überlasten. Es bildet gleichzeitig typische Anwendungsfälle in realen datenintensiven Szenarien ab, bei denen Ressourcen effizient genutzt werden müssen.
+Für XML wurde aufgrund des hohen Speicherverbrauchs bei der Verarbeitung größerer Datensätze ein optimiertes Streamingverfahren eingesetzt. Bei diesem Ansatz wird der Datensatz nicht vollständig im Speicher gehalten, sondern schrittweise verarbeitet. Die XML-Daten werden dabei durch eine rekursive Generierung einzelner XML-Elemente Stück für Stück erzeugt und direkt in eine Datei geschrieben. Dieser Mechanismus nutzt einen sogenannten Generator, der jeweils kleine Teile des XML-Dokuments erzeugt, diese sofort ausgibt und sie anschließend aus dem Speicher entfernt. Dadurch wird der Speicherbedarf unabhängig von der Größe des Datensatzes auf ein Minimum reduziert. Dieses Verfahren ermöglicht es, auch extrem große Datensätze zu serialisieren, ohne den verfügbaren Arbeitsspeicher zu überlasten. Es bildet gleichzeitig typische Anwendungsfälle in realen datenintensiven Szenarien ab, bei denen Ressourcen effizient genutzt werden müssen. Allerdings hat dies solch imense Auswirkungen auf die Serialisierungszeit das für die Bewertung die Ergebnisse von großen Datensätzen mittels XML verworfen wurden.
 
 Protocol Buffers (Protobuf) erhielt ebenfalls spezifische Implementierungen für jede Datensatzart. Diese Maßnahme war notwendig, da eine generische Behandlung in Protobuf zu schlechten Ergebnissen führt, die die tatsächlichen Stärken des Formats nicht widerspiegeln. Mit maßgeschneiderten Protobuf-Definitionen und entsprechenden Serialisierungs- und Deserialisierungsfunktionen konnte eine realistischere Bewertung vorgenommen werden, die den praxisnahen Einsatz des Formats besser abbildet.
 
@@ -198,7 +211,9 @@ Die Tests wurden für jede Kombination aus Datensatz, Technologie und Implementi
 
 Ein wesentliches Problem bei den Messungen war die ineffiziente Datenhaltung in Python. Diese führte dazu, dass ein 680 MB großer JSON-Datensatz im Speicher etwa 2 GB beanspruchte, was die Effizienz der Tests erheblich beeinträchtigte.
 
-Zudem stellten die Implementierungen von Protobuf und XML besondere Herausforderungen dar. Insbesondere XML war aufgrund seines hohen Speicherverbrauchs problematisch. Für einige Datensätze, wie den oben erwähnten JSON-Datensatz, benötigte die XML-Serialisierung teilweise über 30 GB Arbeitsspeicher. Diese Anforderungen führten dazu, dass XML für problematische Datensätze nicht getestet wurde, da die Tests oft unvorhersehbar fehlschlugen. Selbst wenn die Serialisierung funktionierte, betrugen die Laufzeiten mit der Streaming-Variante für große Datensätze häufig mehr als 10 Minuten, was die Tests unpraktikabel machte.
+Die Implementierungen von Protobuf und XML stellten besondere Herausforderungen dar. Insbesondere XML erwies sich aufgrund seines hohen Speicherverbrauchs als problematisch. Bei einigen Datensätzen, wie dem zuvor erwähnten JSON-Datensatz, benötigte die XML-Serialisierung teilweise über 30 GB Arbeitsspeicher. Diese hohen Anforderungen führten dazu, dass XML für besonders speicherintensive Datensätze nicht getestet wurde, da die Tests oft unvorhersehbar fehlschlugen. Selbst wenn die Serialisierung funktionierte, betrugen die Laufzeiten bei der Streaming-Variante für große Datensätze häufig mehr als 10 Minuten, was die Durchführung der Tests unpraktikabel machte.
+
+Es sei jedoch darauf hingewiesen, dass einige dieser Probleme möglicherweise auf die gewählte Implementierung zurückzuführen sind. Python bietet verschiedene XML-Bibliotheken an, die oft auf spezifische Anwendungsfälle optimiert sind. Eine einzige, universelle Implementierung innerhalb des Testskripts, die alle Datensatztypen abdeckt, kann zu Leistungseinbußen führen. Eine detaillierte Untersuchung der unterschiedlichen XML-Bibliotheken und deren Eignung für spezifische Anforderungen wäre hier sinnvoll, würde jedoch den Rahmen dieser Arbeit sprengen.
 
 Protobuf brachte ebenfalls spezifische Schwierigkeiten mit sich. Die ineffiziente Datenhaltung in Python, kombiniert mit dessen vergleichsweise langsamer Programmausführungszeit, machte es notwendig, für jeden Datensatz spezifische Protobuf-Implementierungen zu entwickeln, um eine faire Vergleichsbasis zu schaffen. Die generische Implementierung verursachte aufgrund des hohen Sprach-Overheads erheblichen Ressourcenverbrauch und lange Ausführungszeiten, sodass Protobuf in diesen Fällen sogar von XML in Effizienz und Performance übertroffen wurde.
 
