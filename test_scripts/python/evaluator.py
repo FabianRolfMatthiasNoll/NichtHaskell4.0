@@ -2,6 +2,7 @@ import time
 import json
 import math
 import os
+import gc
 import psutil
 import platform
 import datasets_pb2
@@ -13,7 +14,7 @@ from sys import getsizeof
 DATASETS_DIR = "datasets"
 OUTPUT_DIR = "serialization_test_results"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "results.json")
-XML_THRESHOLD_MB = 100
+XML_THRESHOLD_MB = 20000
 REPEATS = 10  # Number of repetitions per test
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -63,18 +64,12 @@ def deserialize_msgpack(data):
     return msgpack.unpackb(data, raw=False)
 
 
-def serialize_xml(data, output_file=None):
-    """
-    Serialize data to XML.
-    For large datasets (above threshold), use streaming to minimize memory usage.
-    """
-
+def serialize_xml(data):
     def build_xml(element, data):
         if isinstance(data, dict):
-            for k, v in data.items():
-                child = etree.SubElement(element, "item")
-                child.set("key", k)
-                build_xml(child, v)
+            for key, value in data.items():
+                child = etree.SubElement(element, key)
+                build_xml(child, value)
         elif isinstance(data, list):
             for item in data:
                 child = etree.SubElement(element, "item")
@@ -84,42 +79,20 @@ def serialize_xml(data, output_file=None):
 
     root = etree.Element("root")
     build_xml(root, data)
-
-    if output_file:  # Streaming approach
-        with open(output_file, "wb") as f:
-            tree = etree.ElementTree(root)
-            tree.write(f, pretty_print=True, xml_declaration=True, encoding="utf-8")
-        return None  # No data returned for streaming
-    else:  # In-memory approach
-        return etree.tostring(
-            root, pretty_print=True, xml_declaration=True, encoding="utf-8"
-        )
+    return etree.tostring(root, pretty_print=True, encoding="unicode")
 
 
-def deserialize_xml(input_file=None, xml_data=None):
-    """
-    Deserialize XML data.
-    If input_file is provided, use streaming; otherwise, deserialize from memory.
-    """
-
-    def parse_element(element):
-        if len(element):  # Element has children
-            if "key" in element.attrib:
-                return {element.attrib["key"]: parse_element(list(element)[0])}
-            else:
-                return [parse_element(child) for child in element]
-        else:  # Leaf node
+def deserialize_xml(xml_string):
+    def parse_xml(element):
+        if len(element) == 0:  # No children
             return element.text
+        elif all(child.tag == "item" for child in element):  # List
+            return [parse_xml(child) for child in element]
+        else:  # Dictionary
+            return {child.tag: parse_xml(child) for child in element}
 
-    if input_file:  # Streaming approach
-        data = []
-        for _, element in etree.iterparse(input_file, tag="item"):
-            data.append(parse_element(element))
-            element.clear()  # Free memory for processed elements
-        return data
-    else:  # In-memory approach
-        root = etree.fromstring(xml_data)
-        return parse_element(root)
+    root = etree.fromstring(xml_string)
+    return parse_xml(root)
 
 
 def serialize_flat_int_list(data):
@@ -136,12 +109,10 @@ def deserialize_flat_int_list(data):
 
 def serialize_deep_flat_int_list(data):
     def build_node(data, node):
-        if isinstance(data.get("child"), list):  # Terminal node
-            # Populate the `value_list` field
+        if isinstance(data.get("child"), list):
             value_list = node.value_list
             value_list.values.extend(data["child"])
-        elif "child" in data and isinstance(data["child"], dict):  # Intermediate node
-            # Populate the `child` field
+        elif "child" in data and isinstance(data["child"], dict):
             build_node(data["child"], node.child)
         else:
             raise ValueError(f"Invalid structure at this level:")
@@ -263,7 +234,7 @@ def run_tests():
 
     for i, dataset_file in enumerate(dataset_files):
         dataset_path = os.path.join(DATASETS_DIR, dataset_file)
-        print(f"[{i+1}|{file_amount}]Loading {dataset_file}")
+        print(f"[{i+1}|{file_amount}] Loading {dataset_file}")
         dataset = load_json_dataset(dataset_path)
         in_memory_size = get_object_size(dataset)
         dataset_size_mb = in_memory_size / math.pow(1024, 2)
@@ -297,44 +268,33 @@ def run_tests():
 
         protocols = [
             ("JSON", serialize_json, deserialize_json),
-            (
-                "XML",
-                lambda data: serialize_xml(
-                    data,
-                    (
-                        f"{OUTPUT_DIR}/temp.xml"
-                        if dataset_size_mb > XML_THRESHOLD_MB
-                        else None
-                    ),
-                ),
-                lambda data: deserialize_xml(
-                    input_file=(
-                        f"{OUTPUT_DIR}/temp.xml"
-                        if dataset_size_mb > XML_THRESHOLD_MB
-                        else None
-                    ),
-                    xml_data=data if dataset_size_mb <= XML_THRESHOLD_MB else None,
-                ),
-            ),
+            ("XML", serialize_xml, deserialize_xml),
             ("MessagePack", serialize_msgpack, deserialize_msgpack),
             ("ProtoBuf", serialize_func, deserialize_func),
         ]
 
         for protocol_name, serialize_func, deserialize_func in protocols:
+
+            if protocol_name == "XML" and "256MB" in dataset_file:
+                continue
             print(f"Testing {protocol_name}...")
             serialization_times = []
             deserialization_times = []
             sizes = []
 
-            for i in range(REPEATS):
-                print(f"[{i+1}|{REPEATS}] Serialisation")
+            for repeat in range(REPEATS):
+                print(
+                    f"[{dataset_file}][{protocol_name}][{repeat+1}|{REPEATS}] Serialisation"
+                )
                 # Measure serialization
                 serialized_data, serialization_time = measure_time(
                     serialize_func, dataset
                 )
                 serialization_times.append(serialization_time)
 
-                print(f"[{i+1}|{REPEATS}] Deserialisation")
+                print(
+                    f"[{dataset_file}][{protocol_name}][{repeat+1}|{REPEATS}] Deserialisation"
+                )
                 # Measure deserialization
                 _, deserialization_time = measure_time(
                     deserialize_func, serialized_data
@@ -342,7 +302,7 @@ def run_tests():
                 deserialization_times.append(deserialization_time)
 
                 # Measure size
-                if protocol_name == "XML" and dataset_size_mb > XML_THRESHOLD_MB:
+                if protocol_name == "XML":
                     sizes.append(os.path.getsize(f"{OUTPUT_DIR}/temp.xml"))
                 else:
                     sizes.append(len(serialized_data))
@@ -365,6 +325,10 @@ def run_tests():
             }
             append_to_file(OUTPUT_FILE, result)
             print(f"Result appended for {protocol_name}")
+
+        # Clean up dataset and force garbage collection
+        del dataset
+        gc.collect()
 
     print(f"All results saved to {OUTPUT_FILE}")
 

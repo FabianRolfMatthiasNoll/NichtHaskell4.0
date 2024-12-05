@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 with open("serialization_test_results/results.json", "r") as file:
     data = json.load(file)
 
-results = pd.DataFrame(data["results"])
-system_info = data["system_info"]
+system_info = data[0]["system_info"]
+results = pd.DataFrame(data[1:])
 
 # Separate datasets into two groups: large and small datasets
 large_datasets = results[results["Dataset"].str.contains("256MB")]
@@ -45,7 +45,7 @@ def plot_compression_ratio(ax):
 # Plot serialization time
 def plot_serialization_time(ax, dataset, title):
     pivot_data = dataset.pivot(
-        index="Dataset", columns="Protocol", values="Serialization Time (s)"
+        index="Dataset", columns="Protocol", values="Average Serialization Time (s)"
     )
     pivot_data.plot(kind="bar", ax=ax)
     ax.set_title(title)
@@ -58,7 +58,7 @@ def plot_serialization_time(ax, dataset, title):
 # Plot deserialization time
 def plot_deserialization_time(ax, dataset, title):
     pivot_data = dataset.pivot(
-        index="Dataset", columns="Protocol", values="Deserialization Time (s)"
+        index="Dataset", columns="Protocol", values="Average Deserialization Time (s)"
     )
     pivot_data.plot(kind="bar", ax=ax)
     ax.set_title(title)
