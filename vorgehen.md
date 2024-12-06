@@ -19,6 +19,7 @@ Metriken:
   - Lesbarkeit
   - Wartbarkeit/Usability
 
+
 ToDo:
 - Matthias:
   - Quellensuche: Implementierungsgüte, welche gut, welche nicht, Vergleich, etc.
@@ -30,3 +31,15 @@ ToDo:
     - Datengenerierung
     - Python
 - Shared:
+
+ToDo Teil 2 (Freitag):
+- Matthias
+  - Datengenerierung -> JSON oder Protobuf
+  - Erweitern von Rust-Serializer um Protobuf und Messagepack
+  - (Schreiben über Datengenerierung und Datenhomogenität)
+  - (Messreihe aufstellen)
+- Fabian
+  - Rust einrichten
+  - Python Skript anpassen (Inputdaten von mrab)
+  - (Schreiben über Implementierungsgüte)
+  - Messreihe aufstellen

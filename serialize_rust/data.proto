@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message Data {
+    oneof value {
+        bool boolean = 1;
+        int32 integer = 2;
+        int64 big_integer = 3;
+        float float_value = 4;
+        double big_float = 5;
+        string string_literal = 6;
+        KVP key_value_pair = 7;
+        Array list = 8;
+    }
+}
+
+message KVP {
+    string key = 1;
+    Data value = 2;
+}
+
+message Array {
+    repeated Data elements = 1;
+}
