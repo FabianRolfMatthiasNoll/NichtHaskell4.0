@@ -1,8 +1,54 @@
 use core::time;
-use std::{collections::HashMap, fs, io::Write, time::Instant};
+use std::{collections::HashMap, fs, hash::Hash, io::Write, time::Instant};
 use rand::Rng;
+use serde::{Deserialize, Serialize};
+use sysinfo::System;
 use serde_protobuf::value::Message;
 use serialize_rust::{data::SerializableData, datagen::{list, random_bigfloat, random_bigint, random_boolean, random_choice, random_float, random_int, random_kvpair, random_list, random_string}, serializer::Serializer, serializers::{json::JSONSerializer, messagepack::MessagepackSerializer, protobuf::ProtobufSerializer, xml::XMLSerializer}};
+
+const DATASET_DIR: &str = "../datasets";
+
+#[derive(Serialize, Deserialize)]
+pub struct SysInfo {
+    #[serde(rename = "CPU")]
+    pub cpu: String,
+    #[serde(rename = "Cores")]
+    pub cores: u32,
+    #[serde(rename = "Memory (GB)")]
+    pub memory: f64,
+    #[serde(rename = "OS")]
+    pub os: String
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct SysInfoWrapper {
+    pub system_info: SysInfo
+}
+
+#[derive(Serialize, Deserialize, Default, Clone)]
+struct DatasetResult {
+    #[serde(rename = "Dataset")]
+    pub dataset: String,
+    #[serde(rename = "Protocol")]
+    pub protocol: String,
+    #[serde(rename = "Dataset In-Memory Size (bytes)")]
+    pub datasize_memory: u64,
+    #[serde(rename = "Average Serialized Size (bytes)")]
+    pub datasize_serialized: Option<u64>,
+    #[serde(rename = "Compression Ratio")]
+    pub compression_ratio: Option<f64>,
+    #[serde(rename = "Average Serialization Time (s)")]
+    pub serialization_time: Option<f64>,
+    #[serde(rename = "Average Deserialization Time (s)")]
+    pub deserialization_time: Option<f64>,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ResultData {
+    SystemInfo(SysInfoWrapper),
+    ResultSet(DatasetResult),
+}
 
 fn format_size(bytes: usize) -> String {
     const KB: usize = 1024;
@@ -64,107 +110,173 @@ fn generate_dataset_int_tree(depth: usize, children_per_node: usize) -> Serializ
 fn generate_datasets() {
     let dataset = generate_dataset_flat_intlist((2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_flat_intlist_256MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_flat_intlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_flat_intlist((2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_flat_intlist_8MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_flat_intlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
-    /* let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(28));
+    let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_deep_flat_intlist_256MB.json", &serialized).unwrap(); */
+    std::fs::write(format!("{}/dataset_deep_flat_intlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_deep_flat_intlist(50, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_not_so_deep_flat_intlist_256MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_not_so_deep_flat_intlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
-    /* let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(23));
+    let dataset = generate_dataset_deep_flat_intlist(10000, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_deep_flat_intlist_8MB.json", &serialized).unwrap(); */
+    std::fs::write(format!("{}/dataset_deep_flat_intlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_deep_flat_intlist(50, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_not_so_deep_flat_intlist_8MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_not_so_deep_flat_intlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_flat_floatlist((2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_flat_floatlist_256MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_flat_floatlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_flat_floatlist((2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_flat_floatlist_8MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_flat_floatlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
-    /* let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(28));
+    let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_deep_flat_floatlist_256MB.json", &serialized).unwrap(); */
+    std::fs::write(format!("{}/dataset_deep_flat_floatlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_deep_flat_floatlist(50, (2 as usize).pow(28));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_not_so_deep_flat_floatlist_256MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_not_so_deep_flat_floatlist_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
-   /*  let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(23));
+    let dataset = generate_dataset_deep_flat_floatlist(10000, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_deep_flat_floatlist_8MB.json", &serialized).unwrap(); */
+    std::fs::write(format!("{}/dataset_deep_flat_floatlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_deep_flat_floatlist(50, (2 as usize).pow(23));
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_not_so_deep_flat_floatlist_8MB.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_not_so_deep_flat_floatlist_8MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
     let dataset = generate_dataset_int_tree(4, 8);
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_int_tree_small.json", &serialized).unwrap();
+    std::fs::write(format!("{}/dataset_int_tree_small.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 
-    /* let dataset = generate_dataset_int_tree(8, 8);
+    let dataset = generate_dataset_int_tree(8, 8);
     let serialized = JSONSerializer::serialize(&dataset).unwrap();
-    std::fs::write("./datasets/dataset_int_tree_large.json", &serialized).unwrap(); */
+    std::fs::write(format!("{}/dataset_int_tree_large.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
+}
 
+fn fetch_sysinfo() -> SysInfo {
+    let mut system = System::new_all();
+    system.refresh_all();
+
+    // Get CPU name and number of cores
+    let cpu_name = system.cpus().first().map(|cpu| cpu.brand()).unwrap_or("Unknown CPU").to_string();
+    let cpu_cores = system.physical_core_count().unwrap_or(0) as u32;
+    let total_memory = ((system.total_memory() as f64 / 1024f64.powf(3.0) * 100.0).round() / 100.0);
+    let os_type = System::name().unwrap_or_else(|| "Unknown OS".to_string());
+
+    SysInfo {
+        cpu: cpu_name,
+        cores: cpu_cores,
+        memory: total_memory,
+        os: os_type,
+    }
+}
+
+fn evaluate_dataset(file: &str) -> Result<Vec<DatasetResult>, String> {
+    type NamedSerializer = (&'static str, fn (&SerializableData) -> Result<Vec<u8>, String>, fn (&Vec<u8>) -> Result<SerializableData, String>);
+    let serializers: Vec<NamedSerializer> = vec![
+        ("JSON",        JSONSerializer::serialize, JSONSerializer::deserialize),
+        ("XML",         XMLSerializer::serialize, XMLSerializer::deserialize),
+        ("Protobuf",    ProtobufSerializer::serialize, ProtobufSerializer::deserialize),
+        ("Messagepack", MessagepackSerializer::serialize, MessagepackSerializer::deserialize),
+    ];
+
+    let mut results = vec![DatasetResult::default(); 4];
+    let data = std::fs::read(format!("{}/{}", DATASET_DIR, file)).map_err(|err| err.to_string())?;
+    let data = JSONSerializer::deserialize(&data)?;
+
+    for (index, (name, serializer, deserializer)) in serializers.iter().enumerate() {
+
+        results[index].dataset = String::from(file);
+        results[index].protocol = String::from(*name);
+        results[index].datasize_memory = data.memory_size() as u64;
+
+        let start_timestamp = Instant::now();
+        if let Ok(serialized_data) = serializer(&data) {
+            let end_timestamp = Instant::now();
+            let serialize_time = end_timestamp - start_timestamp;
+            let compression_ratio = data.payload_size() as f32 / serialized_data.len() as f32;
+
+            results[index].compression_ratio = Some(compression_ratio as f64);
+            results[index].datasize_serialized = Some(serialized_data.len() as u64);
+            results[index].serialization_time = Some(serialize_time.as_secs_f64());
+
+            let start_timestamp = Instant::now();
+            if let Ok(_) = deserializer(&serialized_data) {
+                let end_timestamp = Instant::now();
+                let deserialize_time = end_timestamp - start_timestamp;
+
+                results[index].deserialization_time = Some(deserialize_time.as_secs_f64());
+            }
+        }
+    }
+
+    Ok(results)
 }
 
 fn main() {
+    //generate_datasets();
 
-    generate_datasets();
-    return;
+    let mut results: Vec<DatasetResult> = Vec::new();
 
-    // "generate a list with 40 entries, each entry being either:
-    // - a random i32
-    // - a random float
-    // - a random string of length 3
-    // - a random kvpair, with a key length of 5 and the value being either:
-    //     - a random boolean
-    //     - a random f64
-    // "
-    // This is just an example, but you get the gist.
-    // We can declaratively build a pretty complex dataset, but with runtime parametrisation. Neat.
-    let data = random_list(400000, || random_choice(vec![
-        random_int,
-        random_float,
-        || random_string(3),
-        || random_kvpair(5, || random_choice(vec![
-            random_boolean,
-            random_bigfloat
-        ]))
-    ]));
+    for entry in std::fs::read_dir(DATASET_DIR).unwrap() {
+        if let Ok(file) = entry {
+            let filename = String::from(file.file_name().to_str().unwrap());
+            if file.file_type().unwrap().is_file() {
+                if let Ok(res) = evaluate_dataset(&filename) {
+                    results.extend(res);
+                }
+            }
 
-    type NamedSerializer = (&'static str, fn (&SerializableData) -> Result<Vec<u8>, String>);
-    let serializers: Vec<NamedSerializer> = vec![
-        ("Protobuf",    ProtobufSerializer::serialize),
-        ("Messagepack", MessagepackSerializer::serialize),
-        ("XML",         XMLSerializer::serialize),
-        ("JSON",        JSONSerializer::serialize)
+            if filename == "dataset_int_tree_small.json" {
+                break;
+            }
+        }
+    }
+
+    let mut total_result = vec![
+        ResultData::SystemInfo(SysInfoWrapper { systeminfo: fetch_sysinfo() }),
     ];
 
-    for (name, serializer) in serializers {
-        let start_timestamp = Instant::now();
-        let serialized_data = serializer(&data).expect("failed to serialize");
-        let end_timestamp = Instant::now();
-        let time_taken = end_timestamp - start_timestamp;
-        let compression_ratio = data.payload_size() as f32 / serialized_data.len() as f32;
-
-        println!("Serializer '{name}':");
-        println!("took {:?} to serialize data", time_taken);
-        println!("actual data size: {}", format_size(data.payload_size()));
-        println!("serialized data size: {}", format_size(serialized_data.len()));
-        println!("compression ratio: {compression_ratio}");
-        println!("");
-    }
+    total_result.extend(results.iter().map(|result| ResultData::ResultSet(result.clone())));
+    println!("{}", serde_json::to_string_pretty(&total_result).unwrap());
 }

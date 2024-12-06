@@ -16,6 +16,9 @@ pub enum SerializableData {
 }
 
 impl SerializableData {
+    // theoretical size of the actual payload data, without metadata
+    // required to keep track of things such as string length, vector length
+    // references or pointers.
     pub fn payload_size(&self) -> usize {
         match self {
             SerializableData::Boolean(_)                => 1,
@@ -26,6 +29,21 @@ impl SerializableData {
             SerializableData::StringLiteral(literal)    => literal.len(),
             SerializableData::KeyValuePair(key, value)  => key.len() + value.payload_size(),
             SerializableData::List(vec)                 => vec.iter().map(|child| child.payload_size()).sum(),
+        }
+    }
+
+    // actual size, in memory, of the given data. Contains "extra" stuff such as management
+    // data for strings, vectors, etc.
+    pub fn memory_size(&self) -> usize {
+        match self {
+            SerializableData::Integer(_)    |
+            SerializableData::BigInteger(_) |
+            SerializableData::Float(_)      |
+            SerializableData::BigFloat(_)   |
+            SerializableData::Boolean(_)                => std::mem::size_of::<SerializableData>(),
+            SerializableData::StringLiteral(literal)    => std::mem::size_of::<SerializableData>() + literal.len(),
+            SerializableData::KeyValuePair(key, value)  => std::mem::size_of::<SerializableData>() + key.len() + value.memory_size(),
+            SerializableData::List(vec)                 => std::mem::size_of::<SerializableData>() + vec.iter().map(|child| child.memory_size()).sum::<usize>(),
         }
     }
 
@@ -104,6 +122,20 @@ impl<'de> Deserialize<'de> for SerializableData {
                 E: de::Error,
             {
                 Ok(SerializableData::BigInteger(value))
+            }
+
+            fn visit_u32<E>(self, value: u32) -> Result<Self::Value, E>
+            where
+                E: de::Error,
+            {
+                Ok(SerializableData::Integer(value as i32))
+            }
+
+            fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
+            where
+                E: de::Error,
+            {
+                Ok(SerializableData::BigInteger(value as i64))
             }
 
             fn visit_f32<E>(self, value: f32) -> Result<Self::Value, E>
