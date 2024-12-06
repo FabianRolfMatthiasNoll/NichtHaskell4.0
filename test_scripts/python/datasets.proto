@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+message FlatIntList {
+    repeated int32 values = 1;
+}
+
+message FlatFloatList {
+    repeated float values = 1;
+}
+
+message DeepFlatIntList {
+    message Node {
+        message ValueList {
+            repeated int32 values = 1;
+        }
+        oneof child_or_values {
+            Node child = 1;
+            ValueList value_list = 2;
+        }
+    }
+    Node root = 1;
+}
+
+
+message DeepFlatFloatList {
+    message Node {
+        message ValueList {
+            repeated float values = 1;
+        }
+        oneof child_or_values {
+            Node child = 1;
+            ValueList value_list = 2;
+        }
+    }
+    Node root = 1;
+}
+
+message IntTree {
+    message Node {
+        int32 data = 1;
+        repeated Node children = 2;
+    }
+    Node root = 1;
+}
+
+
