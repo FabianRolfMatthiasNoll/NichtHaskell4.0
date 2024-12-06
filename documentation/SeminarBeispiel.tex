@@ -54,7 +54,7 @@ In Bezug auf den Einsatzbereich sind binäre Formate aufgrund ihrer Effizienz un
 
 \subsection{Serialisierung vs. Komprimierung}
 
-
+Serialisierung muss grundsätzlich von Komprimierung unterschieden werden. In der Praxis werden oft beide Methoden verwendet, um die zu speichernde Datenmenge zu minimieren. Serialisierung bezeichnet jede wohldefinierte Strukturierung von Daten. Diese erfolgt beispielsweise zum Zweck der Persistierung oder um Daten zuverlässig zwischen Rechnersystemen zu transportieren, zum Beispiel über Netzwerkverbindungen hinweg. Komprimierung hingegen bezeichnet die allgemeine Verringerung der Datengröße. Komprimierung kann entweder verlustfrei oder verlustbehaftet stattfinden. Somit sind die beiden Verfahren fundamental verschieden, können allerdings in Kombination verwendet werden. So können in einem Serialisierungsformat bereits komprimierte Daten gespeichert werden, oder es wird die zuerst serialisierte Datenmenge anschließend komprimiert. Damit die Betrachtungen und Vergleiche zwischen den Messergebnissen in den folgenden Kapiteln aussagekräftig sind, wird auf Komprimierung verzichtet. Allgemein kann ein beliebiger Komprimierungsalgorithmus verwendet werden, um die Speichereffizienz zu erhöhen. Die nachfolgenden Betrachtungen sollen aber die Serialisierungsformate an sich bewerten.
 
 \subsection{Theoretisch optimale Serialisierung}
 
@@ -98,7 +98,7 @@ Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung i
   \centering
   \begin{tabular}{|l|l|l|l|} 
   \hline
-  \textbf{Untere Grenze} & \textbf{Obere Grenze} & \textbf{Anzahl} & \textbf{Dezimalstellen}  \\ 
+  \textbf{Untere Grenze} & \textbf{Obere Grenze} & \textbf{Anzahl} & \textbf{Ziffern}         \\ 
   \hline
   0                      & 9                     & 10              & 1                        \\
   10                     & 99                    & 90              & 2                        \\
@@ -118,7 +118,7 @@ Das arithmetische Mittel der Länge wird wie folgt berechnet:
 
 $$\frac{\sum_{i=1}^{10} Anzahl(i) * Dezimalstellen(i)}{2^{31}} \approx 9.4826$$
 
-Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte repräsentiert werden, sind die durchschnittliche Anzahl an Dezimalstellen und der durchschnittliche Speicherverbrauch der gleichen Zahl identisch. ALlerdings führt die Tabelle nur die positiven Zahlen auf. Negative Zahlen werden üblicherweise über das vorangestellte Symbol `-' deklariert. Da der Zahlenraum der positiven und negativen Zahlen nahezu gleich groß sind, ergibt sich daraus eine durchschnittliche Erhöhung der Länge um 0.5 Zeichen. Somit ist die durchschnittliche Länge eines textuell serialisierten 32-Bit Integers 9.9826 Byte. Da ein nativer Integer in nur 4 Bytes repräsentiert wird, ist die textuelle Repräsentation im Durchschnitt um 149.56\% größer. Somit gilt auch für Integer $ M_{\text{textuell}} \geq M_{\text{binär}} $.
+Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte repräsentiert werden, sind die durchschnittliche Anzahl an Dezimalstellen und der durchschnittliche Speicherverbrauch der gleichen Zahl identisch. Allerdings führt die Tabelle nur die positiven Zahlen auf. Negative Zahlen werden üblicherweise über das vorangestellte Symbol `-' deklariert. Da der Zahlenraum der positiven und negativen Zahlen nahezu gleich groß sind, ergibt sich daraus eine durchschnittliche Erhöhung der Länge um 0.5 Zeichen. Somit ist die durchschnittliche Länge eines textuell serialisierten 32-Bit Integers 9.9826 Byte. Da ein nativer Integer in nur 4 Bytes repräsentiert wird, ist die textuelle Repräsentation im Durchschnitt um 149.56\% größer. Somit gilt auch für Integer $ M_{\text{textuell}} \geq M_{\text{binär}} $.
 
 Ähnliche Berechnungen sind auch für Fließkommazahlen möglich, allerdings ist die Repräsentation, im Gegensatz zu den Ganzzahlen, implementationsabhängig. Dabei gibt es verschiedene Merkmale, die festlegen, ab wann die wissenschaftliche Notation verwendet wird. Allerdings lässt bereits der enorme abbildbare Zahlenraum von $\pm10^{38}$ darauf schließen, dass die benötigte Anzahl an Dezimalstellen die der Ganzzahlen weit übersteigt. Zusätzliche Zeichen und Zeichenketten, wie etwa der Dezimalpunkt oder der Exponent in der wissenschaftlichen Notation erhöhen die Anzahl der benötigten Zeichen zusätzlich.
 
@@ -156,7 +156,7 @@ Im folgenden Abschnitt wird die Auswahl der zu vergleichenden Formate erläutert
 
 Die Auswahl der Formate JSON, XML, Protocol Buffers und MessagePack erfolgte aufgrund ihrer unterschiedlichen Stärken, die jeweils auf spezifische Anwendungsfälle und Anforderungen abzielen.
 
-\textbf{JSON} wurde wegen seiner Einfachheit, Lesbarkeit und breiten Unterstützung in Web-Technologien gewählt. Es ist ideal für Situationen, in denen menschliche Lesbarkeit und einfache Integration in verschiedene Programmiersprachen wichtig sind.
+\textbf{JSON} wurde wegen seiner Einfachheit, Lesbarkeit und breiten Unterstützung in Web-Technologien gewählt. Es ist ideal für Situationen, in denen menschliche Lesbarkeit und einfache Integration in verschiedene Programmiersprachen wichtig sind. Es ist weit verbreitet und wird beispielsweise oft in Webanwendungen zur Kommunikation mit Serverschnittstellen verwendet. Auch für einfache Loggingzwecke wird das Format oft verwendet.
 
 \textbf{XML} wurde aufgrund seiner Flexibilität und umfassenden Unterstützung für strukturierte Daten gewählt. Es ist besonders geeignet für Anwendungen, die eine strenge Validierung und Unterstützung für umfangreiche Metadaten erfordern, wie in vielen Legacy-Systemen oder dokumentenzentrierten Umgebungen.
 
