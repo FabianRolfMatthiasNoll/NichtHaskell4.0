@@ -266,15 +266,11 @@ fn main() {
                     results.extend(res);
                 }
             }
-
-            if filename == "dataset_int_tree_small.json" {
-                break;
-            }
         }
     }
 
     let mut total_result = vec![
-        ResultData::SystemInfo(SysInfoWrapper { systeminfo: fetch_sysinfo() }),
+        ResultData::SystemInfo(SysInfoWrapper { system_info: fetch_sysinfo() }),
     ];
 
     total_result.extend(results.iter().map(|result| ResultData::ResultSet(result.clone())));
