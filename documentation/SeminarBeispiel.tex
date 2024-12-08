@@ -53,6 +53,8 @@ Nichtbinäre Formate wie XML oder JSON speichern Daten in einem textbasierten, m
 
 In Bezug auf den Einsatzbereich sind binäre Formate aufgrund ihrer Effizienz und hohen Geschwindigkeit in Bereichen wie Embedded Systems, Kommunikationsprotokollen und Cloud-basierten Diensten weit verbreitet. Nichtbinäre Formate hingegen finden häufig in Bereichen Anwendung, in denen eine einfache Handhabung und schnelle Lesbarkeit durch Menschen wichtiger sind als die absolute Performance, wie z.B. bei Datenübertragungen im Web oder bei einfachen Konfigurationsdateien. Während binäre Formate eine bessere Performance und Speicheroptimierung bieten, sind textbasierte Formate flexibler und einfacher in der Nutzung und im Austausch.
 
+\newpage
+ 
 \subsection{Serialisierung vs. Komprimierung}
 
 Serialisierung muss grundsätzlich von Komprimierung unterschieden werden. In der Praxis werden oft beide Methoden verwendet, um die zu speichernde Datenmenge zu minimieren. Serialisierung bezeichnet jede wohldefinierte Strukturierung von Daten. Diese erfolgt beispielsweise zum Zweck der Persistierung oder um Daten zuverlässig zwischen Rechnersystemen zu transportieren, zum Beispiel über Netzwerkverbindungen hinweg. Komprimierung hingegen bezeichnet die allgemeine Verringerung der Datengröße. Komprimierung kann entweder verlustfrei oder verlustbehaftet stattfinden. Somit sind die beiden Verfahren fundamental verschieden, können allerdings in Kombination verwendet werden. So können in einem Serialisierungsformat bereits komprimierte Daten gespeichert werden, oder es wird die zuerst serialisierte Datenmenge anschließend komprimiert. Damit die Betrachtungen und Vergleiche zwischen den Messergebnissen in den folgenden Kapiteln aussagekräftig sind, wird auf Komprimierung verzichtet. Allgemein kann ein beliebiger Komprimierungsalgorithmus verwendet werden, um die Speichereffizienz zu erhöhen. Die nachfolgenden Betrachtungen sollen aber die Serialisierungsformate an sich bewerten.
@@ -123,10 +125,6 @@ Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte re
 
 Ähnliche Berechnungen sind auch für Fließkommazahlen möglich, allerdings ist die Repräsentation, im Gegensatz zu den Ganzzahlen, implementationsabhängig. Dabei gibt es verschiedene Merkmale, die festlegen, ab wann die wissenschaftliche Notation verwendet wird. Allerdings lässt bereits der enorme abbildbare Zahlenraum von $\pm10^{38}$ darauf schließen, dass die benötigte Anzahl an Dezimalstellen die der Ganzzahlen weit übersteigt. Zusätzliche Zeichen und Zeichenketten, wie etwa der Dezimalpunkt oder der Exponent in der wissenschaftlichen Notation erhöhen die Anzahl der benötigten Zeichen zusätzlich.
 
-\newpage
-
-\section{State of the Art Vergleiche}
-
 \section{Kriterien}
 
 Zum Vergleich von Serialisierungsverfahren ist die Auswahl geeigneter Metriken entscheidend, um fundierte und vergleichbare Ergebnisse zu erzielen. Die folgenden Metriken wurden festgesetzt und mit Fachliteratur abgeglichen und bieten eine umfassende Grundlage für den Vergleich:
@@ -148,6 +146,8 @@ Diese qualitative Metrik bewertet, wie einfach ein Serialisierungsverfahren zu i
 
 \textbf{Ressourcenverbrauch}\newline
 Diese Metrik misst die Nutzung von Systemressourcen wie CPU, Speicher und, falls relevant, auch Energie während der Serialisierungs- und Deserialisierungsprozesse. Ein effizienter Ressourcenverbrauch ist entscheidend, insbesondere in Umgebungen mit begrenzten Systemressourcen, wie eingebetteten Systemen oder IoT-Geräten. Diese Metrik wird einfacher bewertet in Bezug auf Probleme oder limitationen die sich während der Testreihen kristallisiert haben.
+
+Metriken wie Serialisierungszeit, Deserialisierungszeit und Kompressionsrate gehören zu den zentralen Kriterien eines Vergleichs von Serialisierungsverfahren. Diese werden in nahezu jeder relevanten Publikation als entscheidend hervorgehoben \cite{10.1145/944579.944589}, \cite{6215346}. Ebenso spielt die Implementierungsgüte eine bedeutende Rolle, wie beispielsweise in \cite{10.1145/944579.944589} und \cite{vanura2018perfomance} aufgezeigt wird. Dort wird verdeutlicht, dass die Wahl der Programmiersprache – etwa Java oder \text{C\#/.NET} – Performanceunterschiede von bis zu einem Faktor 2 verursachen kann. Auch die Nutzbarkeit und Wartbarkeit stellen wichtige Metriken dar, die sowohl von den Autoren dieser Arbeit als auch von den beteiligten Stakeholdern als relevant angesehen werden.
 
 \section{Die Serialisierungsformate}
 
@@ -228,6 +228,9 @@ Diese Einschränkungen zeigen die praktischen Herausforderungen bei der Verwendu
 
 \section{Ergebnisauswertung}
 
+\cite{10.1145/944579.944589} kann zitiert werden das xml sehr langsam vorallem sehr schnell sehr langsam wird
+
+
 \section{Fazit und Ausblick}
 
 In Zukunft wäre es möglich diese Metriken zu erweitern sowie weitere Formate hinzuzufügen als auch die selbe Umgebung in mehreren Programmiersprachen zu testen um etwaige Implementierungsunterschiede durch eine größere Menge an Daten auszumerzen.
@@ -250,6 +253,8 @@ In Zukunft wäre es möglich diese Metriken zu erweitern sowie weitere Formate h
 % ... oder die Bibliographie mit Hilfe von BibTeX generieren,
 % dies ist auf jeden Fall die bessere Lösung und sollte nach
 % Möglichkeit immer verwendet werden:
+
+\newpage 
 \bibliographystyle{abbrv}
 \bibliography{literatur} % Daten aus der Datei literatur.bib verwenden.
 
