@@ -4,3 +4,4 @@ serialization_test_results
 serialize_rust/target
 datasets
 /datasets/
+/exported_charts*
