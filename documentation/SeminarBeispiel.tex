@@ -187,7 +187,58 @@ Im folgenden Abschnitt werden die verschiedenen Implementierungen, die Erhebungs
 
 \subsection{Datensatz Generierung}
 
-\textcolor{red}{Hier kommt Matze shit noch rein}
+Zum Erheben von Messreihen sind Testdaten notwendig, welche serialisiert/deserialisiert werden können. Damit die Vergleichbarkeit zwischen den Messungen über die Grenzen von Testsystemen und Implementierungen gegeben ist, werden jeweils die gleichen Testdaten verwendet. Die Datengenerierung wurde zuerst möglichst generisch in Rust implementiert. Dazu wurde eine zentrale Struktur angelegt, die verschiedene komplexe Strukturen repräsentieren kann. Dabei gibt es folgende primitive Datentypen:
+
+\begin{itemize}
+  \item Boolean
+  \item Integer (32/64 Bit)
+  \item Float (32/64 Bit)
+  \item String
+\end{itemize}
+
+Zusätzlich zu den primitiven gibt es noch 2 Datentypen, die eine Vernestung und damit die Komposition komplexerer Typen ermöglichen:
+
+\begin{itemize}
+  \item Liste
+  \item Key-Value-Pair
+\end{itemize}
+
+Soll beispielsweise ein Objekt repräsentiert werden, wie es in gängigen Programmiersprachen existiert, so kann eine Liste mit vernesteten Key-Value-Pairs verwendet werden. Auch eine Hashmap kann auf diese Weise serialisiert werden. Flache Listen und andere indexbasierte Datenstrukturen sind trivial umsetzbar. Um das Generieren von Datensätzen so generisch wie möglich zu gestalten, wurden mehrere ``Generatoren'' angelegt. Ein Generator ist in diesem Kontext eine Funktion der Signatur
+
+$$f : () \to \text{SerializableData}$$
+
+Beispielsweise gibt es folgende Generatoren, um einen zufälligen primitiven Datenwert zu generieren:
+
+\begin{itemize}
+  \item random\_boolean
+  \item random\_int
+  \item random\_bigint
+  \item random\_float
+  \item random\_bigfloat
+  \item random\_string
+\end{itemize}
+
+Die Datenwerte sind dabei in ihrem Werteraum gleichverteilt. Da Strings keine feste Länge haben, muss diese dem Generator beim Aufruf spezifiziert werden. Damit die Signatur mit anderen Generatoren kompatibel bleibt, wird dieser Parameter innerhalb einer Lambda-Funktion gebunden. Es entsteht beispielsweise ein ``spezialisierter'' Generator, der dem Generieren einer Zeichenkette von Länge 15 dient, aber kein Parameter mehr hat. Für komplexe Datentypen gibt es weitere solche ``spezialisierbare'' Generatoren, wie etwa für Listen, Bäume etc. Des Weiteren gibt es Generatoren, die wie Kombinatoren funktionieren und beispielsweise aus einer Liste an Generatoren einen zufälligen auswählen.
+
+Mit Hilfe all dieser Infrastruktur ist es möglich, auch komplexe Datensätze deklarativ und übersichtlich zu beschreiben.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{codegen_code.png}
+    \caption{Codebeispiel zur Datensatzgenerierung}
+    \label{fig:codegen_example}
+\end{figure}
+
+\autoref{fig:codegen_example} zeigt den Code, der einen Testdatensatz beschreibt (und generiert). Der Datensatz besteht aus einer Liste mit 100 Elementen, von welchen jedes entweder ein Integer, Float, zufälliger String der Länge 3, oder ein Key-Value-Pair mit Schlüssellänge 5 ist, dessen Wert widerum entweder ein zufälliger Boolean oder Float ist.
+
+Damit möglichst viele Stärken und Schwächen der getesteten Serialisierungsformate abgebildet werden, werden mehrere verschiedene Testdatensätze generiert. Diese variieren in folgenden Metriken:
+
+\begin{itemize}
+  \item Nesting-Tiefe
+  \item Nesting-Breite
+  \item Anzahl Primitive
+  \item Homogenität der Primitive
+\end{itemize}
 
 \subsection{Python Implementierung}
 
@@ -237,11 +288,30 @@ Diese Einschränkungen zeigen die praktischen Herausforderungen bei der Verwendu
 
 \subsection{Rust}
 
-\textcolor{red}{Hier kommt Matze shit noch rein}
+Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten zeigen, welche spezifischen Tools und Technologien für die Durchführung der Tests genutzt wurden:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Name} & \textbf{Version} \\ \hline
+    Rust          & 1.85             \\ \hline
+    serde         & 1.0.215          \\ \hline
+    serde\_json   & 1.0.132          \\ \hline
+    serde\_xml    & 0.9.1            \\ \hline
+    quick\_xml    & 0.37.1           \\ \hline
+    protobuf      & 3.7.1            \\ \hline
+    \end{tabular}
+    \caption{Verwendete Technologien der Messreihe}
+\end{table}
+
+Der Ablauf des Testing-Prozesses geschieht ähnlich zur Python-Implementierung in einem strukturierten und standardisierten Ablauf. Auch hier wird der gesamte Datensatz zunächst in den Speicher geladen, um IO-Performanz von der Messung auszuschließen. Ebenso werden alle Datensätze sequentiell geladen und mehrfach für jedes Serialisierungsformat serialisiert und anschließend deserialisiert, um statistische Schwankungen zu minimieren. Zur Ausgabe der Ergebnisse wird das gleiche, JSON-basierte Format verwendet. Dadurch können die Messergebnisse mit den gleichen Tools verarbeitet und analysiert werden. Ebenso wurden die gleichen Daten über die Hardwareumgebung erfasst, wie es für die Python-Implementierung der Fall ist.
+
+Die Implementierung geschieht mit Hilfe des weit-verbreiteten \cite{cratesserde} Frameworks ``Serde''. Alle getesteten Formate außer Protobuf werden von Serde unterstützt. (Protobuf unterstützt aktuell nur Deserialisierung, aber keine Serialisierung. Deshalb wird auf das zusätzliche Crate ``protobuf'' zurückgegriffen.). Dazu wird zunächst eine generische Implementierung der beiden Traits ``Serialize'' und ``Deserialize'' umgesetzt. Innerhalb dieser Implementierung wird beschrieben, wie Serde den zentralen Datentyp in Serde-Datentypen transformieren soll. Anschließend können vorgegebene Funktionen genutzt werden, um die Serialisierung und Deserialisierung in verschiedene Formate vorzunehmen. Die Implementierung fällt daher vergleichsweise kompakt und simpel aus. Für Protobuf werden zunächst über den Protobuf Compiler (protoc) eine .proto-Datei generiert. Mit Hilfe dieser Datei und des Rust-Crates ``protobuf'' kann über einen einzigen Funktionsaufruf die Serialisierung und Deserialisierung implementiert werden. Anders als bei Python zeigt die automatisch generierte Protobuf-Datei im Test gute Performanz bei der Serialisierung.
 
 \subsubsection{Probleme und Limitationen}
 
-\textcolor{red}{Hier kommt Matze shit noch rein}
+Ausschließlich XML führte zu Problemen in der Implementierung. Das mit Serde mitgelieferte ``serde\_xml'' formatierte bei der Serialisierung die primitiven Datenwerte ohne Delimitation oder Tags. Der resultierende Datensatz war gänzlich unbrauchbar. Zur Behebung wurde das externe Crate ``quick-xml'' verwendet. Dieses verwendet die gleichen Traits, die auch Serde verwendet. Somit entfällt eine separate Implementierung von XML. Leider zeigt auch diese Implementierung Probleme in Bezug auf den Speicherverbrauch. Bei den größeren Datensätzen sind 32 GB Arbeitsspeicher teilweise nicht ausreichend, um den gesamten Datensatz zu serialisieren/deserialisieren.
 
 \section{Ergebnisauswertung}
 
