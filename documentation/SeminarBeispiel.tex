@@ -91,7 +91,7 @@ Bei nichtbinären Formaten muss eine Transformation zwischen der binären und de
 
 $$ M_{\text{textuell}} \geq M_{\text{binär}} $$
 
-Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine solche Transformation, da sie direkt übernommen werden können. Viele Serialisierungsformate benötigen allerdings Delimiter, um den Anfang und das Ende des Strings anzuzeigen. Zusätzlich kann es notwendig sein, im Format als Steuerzeichen verwendete Zeichen zu modifizieren, damit sie von den Steuerzeichen unterscheidbar bleiben. Viele Formate verwenden dazu z.B. das Präfix `\\' oder `/'.
+Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine solche Transformation, da sie direkt übernommen werden können. Viele Serialisierungsformate benötigen allerdings Delimiter, um den Anfang und das Ende des Strings anzuzeigen. Zusätzlich kann es notwendig sein, im Format als Steuerzeichen verwendete Zeichen zu modifizieren, damit sie von den Steuerzeichen unterscheidbar bleiben. Viele Formate verwenden dazu z.B. das Präfix `\textbackslash\textbackslash' oder `/'.
 
 Die minimale Größe eines einzelnen Zeichens sind 8 Bits. Daraus folgt, dass auch Booleans mindestens mit einem Zeichen repräsentiert werden. Daher gilt auch für Booleans $ M_{\text{textuell}} \geq M_{\text{binär}} $. Viele Formate verwenden die Literale ``true'' und ``false'', um die Lesbarkeit zu erhöhen. Angenommen, beide Werte treten gleich häufig auf, wird die Effizienz damit um den Faktor $\frac{4 + 5}{2} = 4.5$ gesenkt.
 
