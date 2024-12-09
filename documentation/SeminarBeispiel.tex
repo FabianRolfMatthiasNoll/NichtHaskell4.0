@@ -123,6 +123,8 @@ $$\frac{\sum_{i=1}^{10} Anzahl(i) * Dezimalstellen(i)}{2^{31}} \approx 9.4826$$
 
 Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte repräsentiert werden, sind die durchschnittliche Anzahl an Dezimalstellen und der durchschnittliche Speicherverbrauch der gleichen Zahl identisch. Allerdings führt die Tabelle nur die positiven Zahlen auf. Negative Zahlen werden üblicherweise über das vorangestellte Symbol `-' deklariert. Da der Zahlenraum der positiven und negativen Zahlen nahezu gleich groß sind, ergibt sich daraus eine durchschnittliche Erhöhung der Länge um 0.5 Zeichen. Somit ist die durchschnittliche Länge eines textuell serialisierten 32-Bit Integers 9.9826 Byte. Da ein nativer Integer in nur 4 Bytes repräsentiert wird, ist die textuelle Repräsentation im Durchschnitt um 149.56\% größer. Somit gilt auch für Integer $ M_{\text{textuell}} \geq M_{\text{binär}} $.
 
+\textcolor{red}{Kann man hier eventuell oder in deinen Abschnitten davor noch coole Quellen zitieren oder so?}
+
 Ähnliche Berechnungen sind auch für Fließkommazahlen möglich, allerdings ist die Repräsentation, im Gegensatz zu den Ganzzahlen, implementationsabhängig. Dabei gibt es verschiedene Merkmale, die festlegen, ab wann die wissenschaftliche Notation verwendet wird. Allerdings lässt bereits der enorme abbildbare Zahlenraum von $\pm10^{38}$ darauf schließen, dass die benötigte Anzahl an Dezimalstellen die der Ganzzahlen weit übersteigt. Zusätzliche Zeichen und Zeichenketten, wie etwa der Dezimalpunkt oder der Exponent in der wissenschaftlichen Notation erhöhen die Anzahl der benötigten Zeichen zusätzlich.
 
 \section{Kriterien}
@@ -147,7 +149,7 @@ Diese qualitative Metrik bewertet, wie einfach ein Serialisierungsverfahren zu i
 \textbf{Ressourcenverbrauch}\newline
 Diese Metrik misst die Nutzung von Systemressourcen wie CPU, Speicher und, falls relevant, auch Energie während der Serialisierungs- und Deserialisierungsprozesse. Ein effizienter Ressourcenverbrauch ist entscheidend, insbesondere in Umgebungen mit begrenzten Systemressourcen, wie eingebetteten Systemen oder IoT-Geräten. Diese Metrik wird einfacher bewertet in Bezug auf Probleme oder limitationen die sich während der Testreihen kristallisiert haben.
 
-Metriken wie Serialisierungszeit, Deserialisierungszeit und Kompressionsrate gehören zu den zentralen Kriterien eines Vergleichs von Serialisierungsverfahren. Diese werden in nahezu jeder relevanten Publikation als entscheidend hervorgehoben \cite{10.1145/944579.944589}, \cite{6215346}. Ebenso spielt die Implementierungsgüte eine bedeutende Rolle, wie beispielsweise in \cite{10.1145/944579.944589} und \cite{vanura2018perfomance} aufgezeigt wird. Dort wird verdeutlicht, dass die Wahl der Programmiersprache – etwa Java oder \text{C\#/.NET} – Performanceunterschiede von bis zu einem Faktor 2 verursachen kann. Auch die Nutzbarkeit und Wartbarkeit stellen wichtige Metriken dar, die sowohl von den Autoren dieser Arbeit als auch von den beteiligten Stakeholdern als relevant angesehen werden.
+Metriken wie Serialisierungszeit, Deserialisierungszeit und Kompressionsrate gehören zu den zentralen Kriterien eines Vergleichs von Serialisierungsverfahren. . Diese Aspekte werden in nahezu jeder relevanten Publikation als entscheidend hervorgehoben, darunter insbesondere die Arbeiten von Hericko et al. \cite{10.1145/944579.944589} sowie Maeda \cite{6215346}. Ebenso spielt die Implementierungsgüte eine bedeutende Rolle, wie beispielsweise in den Werken von Hericko et al. \cite{10.1145/944579.944589} und Vanura und Kriz \cite{vanura2018perfomance} aufgezeigt wird. Dort wird verdeutlicht, dass die Wahl der Programmiersprache – etwa Java oder \text{C\#/.NET} – Performanceunterschiede von bis zu einem Faktor 2 verursachen kann. Auch die Nutzbarkeit und Wartbarkeit stellen wichtige Metriken dar, die sowohl von den Autoren dieser Arbeit als auch von den beteiligten Stakeholdern als relevant angesehen werden.
 
 \section{Die Serialisierungsformate}
 
@@ -181,8 +183,15 @@ Protobuf ist ein binäres Serialisierungsformat, das von Google entwickelt wurde
 
 \section{Vergleichsmethodik}
 
-\subsection{Genereller Ansatz}
+Im folgenden Abschnitt werden die verschiedenen Implementierungen, die Erhebungsmethoden der Metriken sowie die dabei aufgetretenen Herausforderungen und Einschränkungen detailliert erläutert. Diese Analyse ist von zentraler Bedeutung, um die Ergebnisse nachvollziehbar zu bewerten, ihre Reproduzierbarkeit sicherzustellen und die Testreihen in ihrer Methodik transparent darzustellen.
 
+\subsection{Datensatz Generierung}
+
+\textcolor{red}{Hier kommt Matze shit noch rein}
+
+\subsection{Python Implementierung}
+
+Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten zeigen, welche spezifischen Tools und Technologien für die Durchführung der Tests genutzt wurden:
 
 \begin{table}[H]
     \centering
@@ -224,9 +233,27 @@ Einzig und allein MessagePack war ein Protokoll das keine Limitationen oder Prob
 
 Diese Einschränkungen zeigen die praktischen Herausforderungen bei der Verwendung von Python und bestimmten Serialisierungsformaten in ressourcenintensiven Szenarien auf. Sie unterstreichen die Bedeutung einer angepassten Implementierung und realistischen Bewertung der Verfahren unter Berücksichtigung ihrer spezifischen Eigenheiten.
 
+\subsection{Rust}
 
+\textcolor{red}{Hier kommt Matze shit noch rein}
+
+\subsubsection{Probleme und Limitationen}
+
+\textcolor{red}{Hier kommt Matze shit noch rein}
 
 \section{Ergebnisauswertung}
+
+Im folgenden werden die entstandenen Ergebnisse der Implementationen gegenübergestellt und nach den zuvor genannten Metriken bewertet.
+
+\subsection{Serialisierung}
+
+\subsection{Deserialisierung}
+
+\subsection{Kompremierungsrate}
+
+\subsection{Ressourcenverbrauch}
+
+\subsection{Nutzbarkeit / Wartbarkeit}
 
 \cite{10.1145/944579.944589} kann zitiert werden das xml sehr langsam vorallem sehr schnell sehr langsam wird
 
