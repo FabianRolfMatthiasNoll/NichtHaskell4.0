@@ -123,8 +123,6 @@ $$\frac{\sum_{i=1}^{10} Anzahl(i) * Dezimalstellen(i)}{2^{31}} \approx 9.4826$$
 
 Da die Zahlen von 0-9 in UTF-8 mit nur einem Zeichen und damit nur einem Byte repräsentiert werden, sind die durchschnittliche Anzahl an Dezimalstellen und der durchschnittliche Speicherverbrauch der gleichen Zahl identisch. Allerdings führt die Tabelle nur die positiven Zahlen auf. Negative Zahlen werden üblicherweise über das vorangestellte Symbol `-' deklariert. Da der Zahlenraum der positiven und negativen Zahlen nahezu gleich groß sind, ergibt sich daraus eine durchschnittliche Erhöhung der Länge um 0.5 Zeichen. Somit ist die durchschnittliche Länge eines textuell serialisierten 32-Bit Integers 9.9826 Byte. Da ein nativer Integer in nur 4 Bytes repräsentiert wird, ist die textuelle Repräsentation im Durchschnitt um 149.56\% größer. Somit gilt auch für Integer $ M_{\text{textuell}} \geq M_{\text{binär}} $.
 
-\textcolor{red}{Kann man hier eventuell oder in deinen Abschnitten davor noch coole Quellen zitieren oder so?}
-
 Ähnliche Berechnungen sind auch für Fließkommazahlen möglich, allerdings ist die Repräsentation, im Gegensatz zu den Ganzzahlen, implementationsabhängig. Dabei gibt es verschiedene Merkmale, die festlegen, ab wann die wissenschaftliche Notation verwendet wird. Allerdings lässt bereits der enorme abbildbare Zahlenraum von $\pm10^{38}$ darauf schließen, dass die benötigte Anzahl an Dezimalstellen die der Ganzzahlen weit übersteigt. Zusätzliche Zeichen und Zeichenketten, wie etwa der Dezimalpunkt oder der Exponent in der wissenschaftlichen Notation erhöhen die Anzahl der benötigten Zeichen zusätzlich.
 
 \section{Kriterien}
@@ -258,11 +256,25 @@ Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten z
     \caption{Verwendete Technologien der Messreihe}
 \end{table}
 
-\textcolor{red}{Python shit muss ich hier nochmal überarbeiten und kürzen viel unnötiges drin}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Komponente}         & \textbf{Details}                     \\ \hline
+Betriebssystem              & Manjaro Linux                        \\ \hline
+Prozessor                   & Intel Core i7-13620H                 \\ \hline
+Prozessor-Details           & 24 MB Cache, bis zu 4.9 GHz          \\ \hline
+Grafikkarte                 & NVIDIA\textsuperscript{\textregistered} GeForce\textsuperscript{\textregistered} RTX 4060 \\ \hline
+Grafikkarten-Speicher       & 8 GB GDDR6                           \\ \hline
+Arbeitsspeicher             & 32 GB (2x16 GB DDR5, 4800 MHz)       \\ \hline
+\end{tabular}
+\caption{Für die Messreihe verwendete Hardware}
+\label{tab:hardware}
+\end{table}
 
 Die Tests wurden in einem strukturierten und standardisierten Ablauf durchgeführt, wobei spezifische Anpassungen vorgenommen wurden, um die Besonderheiten der getesteten Serialisierungsverfahren zu berücksichtigen. Jeder der generierten Datensätze wurde zunächst geladen und seine Größe im Speicher erfasst, um später als Referenz für die Berechnung der Kompressionsrate zu dienen. Anschließend wurden die Serialisierungs- und Deserialisierungszeiten sowie die resultierende Größe der serialisierten Daten für jede Technologie (JSON, XML, MessagePack und Protocol Buffers) gemessen.
 
-Für XML wurde aufgrund des hohen Speicherverbrauchs bei der Verarbeitung größerer Datensätze ein optimiertes Streamingverfahren eingesetzt. Bei diesem Ansatz wird der Datensatz nicht vollständig im Speicher gehalten, sondern schrittweise verarbeitet. Die XML-Daten werden dabei durch eine rekursive Generierung einzelner XML-Elemente Stück für Stück erzeugt und direkt in eine Datei geschrieben. Dieser Mechanismus nutzt einen sogenannten Generator, der jeweils kleine Teile des XML-Dokuments erzeugt, diese sofort ausgibt und sie anschließend aus dem Speicher entfernt. Dadurch wird der Speicherbedarf unabhängig von der Größe des Datensatzes auf ein Minimum reduziert. Dieses Verfahren ermöglicht es, auch extrem große Datensätze zu serialisieren, ohne den verfügbaren Arbeitsspeicher zu überlasten. Es bildet gleichzeitig typische Anwendungsfälle in realen datenintensiven Szenarien ab, bei denen Ressourcen effizient genutzt werden müssen. Allerdings hat dies solch imense Auswirkungen auf die Serialisierungszeit das für die Bewertung die Ergebnisse von großen Datensätzen mittels XML verworfen wurden.
+Für XML wurde aufgrund des hohen Speicherverbrauchs bei der Verarbeitung größerer Datensätze ein optimiertes Streamingverfahren eingesetzt. Bei diesem Ansatz wird der Datensatz nicht vollständig im Speicher gehalten, sondern schrittweise verarbeitet. Die XML-Daten werden dabei durch eine rekursive Generierung einzelner XML-Elemente Stück für Stück erzeugt und direkt in eine Datei geschrieben. Dadurch wird der Speicherbedarf unabhängig von der Größe des Datensatzes auf ein Minimum reduziert. Dieses Verfahren ermöglicht es, auch extrem große Datensätze zu serialisieren, ohne den verfügbaren Arbeitsspeicher zu überlasten. Es bildet gleichzeitig typische Anwendungsfälle in realen datenintensiven Szenarien ab, bei denen Ressourcen effizient genutzt werden müssen. Allerdings hat dies solch immense Auswirkungen auf die Serialisierungszeit das für die Bewertung die Ergebnisse von großen Datensätzen mittels XML verworfen wurden.
 
 Protocol Buffers (Protobuf) erhielt ebenfalls spezifische Implementierungen für jede Datensatzart. Diese Maßnahme war notwendig, da eine generische Behandlung in Protobuf zu schlechten Ergebnissen führt, die die tatsächlichen Stärken des Formats nicht widerspiegeln. Mit maßgeschneiderten Protobuf-Definitionen und entsprechenden Serialisierungs- und Deserialisierungsfunktionen konnte eine realistischere Bewertung vorgenommen werden, die den praxisnahen Einsatz des Formats besser abbildet.
 
