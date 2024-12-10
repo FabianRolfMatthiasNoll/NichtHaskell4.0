@@ -335,6 +335,8 @@ Im folgenden werden die entstandenen Ergebnisse der Implementationen gegenüberg
 
 \subsection{Kompremierungsrate}
 
+\subsection{Implementierungsgüte}
+
 \subsection{Ressourcenverbrauch}
 Die Ergebnisse zeigen, dass XML im Vergleich der getesteten Formate den höchsten Ressourcenverbrauch aufweist. Insbesondere bei großen Objekten ist der Speicherbedarf exorbitant: Ein 2-GB-Objekt führte zu einem Speicherverbrauch von über 32 GB in der verwendeten Implementierung, sowohl in Python als auch in Rust. Dies macht XML für speicherintensive Anwendungen unpraktisch, insbesondere in ressourcenbeschränkten Umgebungen wie Embedded-Systemen oder IoT-Geräten. JSON zeigte sich als moderat und benötigte etwa den gleichen Speicherplatz des originalen Objekts, was auf die Textstruktur des Formats zurückzuführen ist. MessagePack erwies sich als das ressourcenschonendste Format: Es war nicht nur das schnellste, sondern erzeugte auch keine signifikanten Ausschläge im Ressourcenmonitor. Damit eignet es sich hervorragend für Systeme, bei denen geringe Latenz und niedriger Speicherverbrauch essenziell sind, beispielsweise in Echtzeitanwendungen oder mobilen Geräten. Protobuf zeigte einen ähnlichen Ressourcenverbrauch wie JSON, mit einer tendenziell geringeren Speicherbelastung. Es bietet damit eine gute Balance zwischen Effizienz und Flexibilität, insbesondere in leistungsorientierten Anwendungen wie der Kommunikation zwischen Microservices.
 
