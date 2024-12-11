@@ -370,9 +370,16 @@ Die langfristige Nutzbarkeit und Wartbarkeit hängen stark von der Entwicklung u
 Insgesamt sind JSON und Protobuf aufgrund ihrer Standardisierung und umfassenden Unterstützung die besseren Optionen für langfristige Projekte, während MessagePack für kleinere, performancekritische Anwendungen optimal ist. XML bleibt eine Wahl für spezialisierte Anwendungsbereiche, bei denen strukturierte Validierung im Vordergrund steht.
 
 
+\section{Fazit}
+
+\subsection{}
+
+\subsection{XML}
+
+XML ist ein langsames und schwierig aufzusetzendes Format. Als es erschaffen wurde hat es einige Probleme gelöst doch über die Jahre wurden für viele Probleme spezialisierte Lösungen geschaffen die deutlich effizienter sind als XML. Auch in den hier durchgeführten Testreihen hat sich die allgemeine Komplexität als auch ein sehr hoher Ressourcenverbrauch deutlich gezeigt \cite{Pommerenig_2019}. XML wird meist noch noch für Legacy Projekte verwendet doch in Bereichen der Datenübertragung oder in modernen Webanwendungen haben andere Protokolle meist die Oberhand.
 
 
-\section{Fazit und Ausblick}
+\section{Ausblick}
 
 In Zukunft wäre es möglich diese Metriken zu erweitern sowie weitere Formate hinzuzufügen als auch die selbe Umgebung in mehreren Programmiersprachen zu testen um etwaige Implementierungsunterschiede durch eine größere Menge an Daten auszumerzen. Auch eine Aufteilung in die einzelnen Schritte eines Serialisierungs/Deserialisierungsprozess könnte interessante Erkenntnisse über etwaige Bottlenecks aufzeigen die sich in den Sprachen ergeben wie es in der bisher öfters genannten Arbeit zu den Vergleichen zwischen Java und .NET gemacht wurde \cite{10.1145/944579.944589}. 
 
