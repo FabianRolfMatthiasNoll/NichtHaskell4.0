@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Arch Linux) (preloaded format=pdflatex 2024.12.5)  9 DEC 2024 15:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Arch Linux) (preloaded format=pdflatex 2024.12.11)  11 DEC 2024 15:21
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -419,67 +419,216 @@ Overfull \hbox (14.562pt too wide) in paragraph at lines 102--118
 
 [2]
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 3 undefined on input line 152.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 3 undefined on input line 142.
 
 
-LaTeX Warning: Citation `6215346' on page 3 undefined on input line 152.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 3 undefined on input line 150.
 
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 3 undefined on input line 152.
+LaTeX Warning: Citation `6215346' on page 3 undefined on input line 150.
 
 
-LaTeX Warning: Citation `vanura2018perfomance' on page 3 undefined on input line 152.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 3 undefined on input line 150.
 
 
-Underfull \hbox (badness 2326) in paragraph at lines 152--153
+LaTeX Warning: Citation `vanura2018perfomance' on page 3 undefined on input line 150.
+
+
+Underfull \hbox (badness 2326) in paragraph at lines 150--151
 []\T1/ptm/m/n/10 Metriken wie Se-ria-li-sie-rungs-zeit, De-se-ria-li-sie-rungs-zeit
  []
 
 [3]
-Underfull \hbox (badness 1087) in paragraph at lines 175--177
-[]\T1/ptm/b/n/10 MessagePack \T1/ptm/m/n/10 Mes-sa-ge-Pack ist ein bi-näres Se-ria-li-sie-
- []
+
+LaTeX Warning: Citation `rfc8259' on page 4 undefined on input line 160.
+
+
+LaTeX Warning: Citation `w3c_xml' on page 4 undefined on input line 162.
+
+
+LaTeX Warning: Citation `protobuf' on page 4 undefined on input line 164.
+
+
+LaTeX Warning: Citation `msgpack' on page 4 undefined on input line 166.
+
+
+LaTeX Warning: Citation `rfc8259' on page 4 undefined on input line 170.
+
+
+LaTeX Warning: Citation `msgpack' on page 4 undefined on input line 173.
+
+
+LaTeX Warning: Citation `w3c_xml' on page 4 undefined on input line 176.
+
+
+LaTeX Warning: Citation `protobuf' on page 4 undefined on input line 179.
 
 [4]
-<codegen_code.png, id=134, 991.705pt x 457.71pt>
-File: codegen_code.png Graphic file (type png)
-<use codegen_code.png>
-Package pdftex.def Info: codegen_code.png  used on input line 227.
+<images/codegen_code.png, id=135, 991.705pt x 457.71pt>
+File: images/codegen_code.png Graphic file (type png)
+<use images/codegen_code.png>
+Package pdftex.def Info: images/codegen_code.png  used on input line 225.
 (pdftex.def)             Requested size: 243.60645pt x 112.42976pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 227--228
+Overfull \hbox (12.0pt too wide) in paragraph at lines 225--226
  [][] 
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-Underfull \hbox (badness 1253) in paragraph at lines 265--266
-\T1/ptm/m/n/10 Dokuments er-zeugt, die-se so-fort aus-gibt und sie an-
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 267.
+(/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Overfull \hbox (27.45203pt too wide) in paragraph at lines 261--271
+ [][] 
  []
 
-[5 <./codegen_code.png>]
-Underfull \hbox (badness 1087) in paragraph at lines 277--278
+[5 <./images/codegen_code.png>]
+Underfull \hbox (badness 1087) in paragraph at lines 289--290
 \T1/ptm/m/n/10 als pro-ble-ma-tisch. Bei ei-ni-gen Da-ten-sät-zen, wie dem
  []
 
 
-Underfull \vbox (badness 3098) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
 
-LaTeX Warning: Citation `cratesserde' on page 7 undefined on input line 310.
+LaTeX Warning: Citation `serde' on page 7 undefined on input line 322.
 
 
-Underfull \hbox (badness 2922) in paragraph at lines 310--311
+Underfull \hbox (badness 2922) in paragraph at lines 322--323
 []\T1/ptm/m/n/10 Die Im-ple-men-tie-rung ge-schieht mit Hil-fe des weit-
  []
 
+<images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png, id=150, 722.7pt x 433.62pt>
+File: images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png Graphic file (type png)
+<use images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png>
+Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 338.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 330.
+Overfull \hbox (12.0pt too wide) in paragraph at lines 338--339
+ [][] 
+ []
 
-[7]
+<images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png, id=151, 722.7pt x 433.62pt>
+File: images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png Graphic file (type png)
+<use images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png>
+Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 345.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 345--346
+ [][] 
+ []
+
+
+Underfull \hbox (badness 1635) in paragraph at lines 350--351
+\T1/ptm/m/n/10 vor. Dies wird da-durch be-grün-det, dass die Python-
+ []
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 352.
+
+
+LaTeX Warning: Citation `Kapitel 5' on page 7 undefined on input line 352.
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 352.
+
+
+LaTeX Warning: Citation `Kapitel 4.1' on page 7 undefined on input line 352.
+
+
+Underfull \hbox (badness 3108) in paragraph at lines 352--353
+[]\T1/ptm/m/n/10 XML sticht in bei-den Im-ple-men-tie-run-gen als lang-
+ []
+
+[7 <./images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png> <./images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png>]
+<images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png, id=165, 722.7pt x 433.62pt>
+File: images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png Graphic file (type png)
+<use images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png>
+Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 356.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 356--357
+ [][] 
+ []
+
+<images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png, id=166, 722.7pt x 433.62pt>
+File: images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png Graphic file (type png)
+<use images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png>
+Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 363.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 363--364
+ [][] 
+ []
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 8 undefined on input line 368.
+
+
+LaTeX Warning: Citation `Figure 9' on page 8 undefined on input line 368.
+
+
+Underfull \hbox (badness 1178) in paragraph at lines 368--369
+\T1/ptm/m/n/10 ÿe-ren Da-ten-sät-zen mit je-weils 256MB an Nutz-da-ten.
+ []
+
+<images/graphs/python_dataset_int_tree_small_json_combined_times.png, id=169, 722.7pt x 433.62pt>
+File: images/graphs/python_dataset_int_tree_small_json_combined_times.png Graphic file (type png)
+<use images/graphs/python_dataset_int_tree_small_json_combined_times.png>
+Package pdftex.def Info: images/graphs/python_dataset_int_tree_small_json_combined_times.png  used on input line 372.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 372--373
+ [][] 
+ []
+
+
+Underfull \hbox (badness 1442) in paragraph at lines 373--373
+[]\T1/ptm/b/n/8 Abbildung 6. []Serialisierungs- und De-se-ria-li-sie-rungs-zeit In-te-ger-
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/graphs/rust_dataset_int_tree_small_json_combined_times.png, id=170, 722.7pt x 433.62pt>
+File: images/graphs/rust_dataset_int_tree_small_json_combined_times.png Graphic file (type png)
+<use images/graphs/rust_dataset_int_tree_small_json_combined_times.png>
+Package pdftex.def Info: images/graphs/rust_dataset_int_tree_small_json_combined_times.png  used on input line 379.
+(pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 379--380
+ [][] 
+ []
+
+
+Underfull \hbox (badness 1442) in paragraph at lines 380--380
+[]\T1/ptm/b/n/8 Abbildung 7. []Serialisierungs- und De-se-ria-li-sie-rungs-zeit In-te-ger-
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 8 undefined on input line 395.
+
+[8 <./images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png> <./images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png> <./images/graphs/python_dataset_int_tree_small_json_combined_times.png> <./images/graphs/rust_dataset_int_tree_small_json_combined_times.png>]
+Underfull \hbox (badness 4726) in paragraph at lines 403--404
+[]\T1/ptm/m/n/10 XML und Pro-to-buf hin-ge-gen er-for-dern einen grö-
+ []
+
+
+Underfull \hbox (badness 6125) in paragraph at lines 403--404
+\T1/ptm/m/n/10 ÿe-ren Im-ple-men-tie-rungs-auf-wand. Bei XML müs-sen
+ []
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 9 undefined on input line 415.
+
+[9]
 No file SeminarBeispiel.bbl.
 (output/SeminarBeispiel.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 8.
@@ -489,21 +638,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `SeminarBeispiel.out' has not changed.
-(rerunfilecheck)             Checksum: 40430D364469BB0516C766123917A53F;4581.
+(rerunfilecheck)             Checksum: 557CE8E7CB210CDA2D21A09D6468C878;4733.
  ) 
 Here is how much of TeX's memory you used:
- 13198 strings out of 476023
- 216362 string characters out of 5791582
+ 13292 strings out of 476023
+ 220453 string characters out of 5791581
  1952187 words of memory out of 5000000
- 35097 multiletter control sequences out of 15000+600000
- 604455 words of font info for 78 fonts, out of 8000000 for 9000
+ 35177 multiletter control sequences out of 15000+600000
+ 607617 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,11n,93p,1627b,432s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on output/SeminarBeispiel.pdf (7 pages, 196079 bytes).
+ 90i,12n,93p,1627b,432s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on output/SeminarBeispiel.pdf (9 pages, 356899 bytes).
 PDF statistics:
- 215 PDF objects out of 1000 (max. 8388607)
- 180 compressed objects within 2 object streams
- 38 named destinations out of 1000 (max. 500000)
- 206 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 255 PDF objects out of 1000 (max. 8388607)
+ 203 compressed objects within 3 object streams
+ 47 named destinations out of 1000 (max. 500000)
+ 236 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -222,7 +222,7 @@ Mit Hilfe all dieser Infrastruktur ist es möglich, auch komplexe Datensätze de
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{codegen_code.png}
+    \includegraphics[width=0.5\textwidth]{images/codegen_code.png}
     \caption{Codebeispiel zur Datensatzgenerierung}
     \label{fig:codegen_example}
 \end{figure}
@@ -329,13 +329,65 @@ Ausschließlich XML führte zu Problemen in der Implementierung. Das mit Serde m
 
 Im folgenden werden die entstandenen Ergebnisse der Implementationen gegenübergestellt und nach den zuvor genannten Metriken bewertet.
 
-\subsection{Serialisierung}
+\subsection{Serialisierungs- \& Deserialisierungszeit}
 
-\cite{10.1145/944579.944589} kann zitiert werden das xml sehr langsam vorallem sehr schnell sehr langsam wird
+Die Messergebnisse variieren je nach Aufbau des Datensatzes. 
 
-\subsection{Deserialisierung}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit 8MB Integerliste in Python}
+  \label{fig:python_serde_8mb_intlist}
+\end{figure}
 
-\subsection{Kompremierungsrate}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit 8MB Integerliste in Rust}
+  \label{fig:rust_serde_8mb_intlist}
+\end{figure}
+
+\autoref{fig:python_serde_8mb_intlist} und \autoref{fig:rust_serde_8mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten der getesteten Formate für eine flache Liste von 32-Bit Integern von jeweils ca. 8MB. Zu sehen ist die allgemein um ca. eine Größenordnung kürzere Laufzeit aller Formate in Rust gegenüber Python, was dadurch begründet werden kann, dass Python eine interpretierte Programmiersprache ist. Mit Ausnahme von XML schneiden in der Python-Implementierung alle Formate ähnlich gut ab. In der Rust-Implementierung sticht zusätzlich Protobuf als langsameres Format hervor. Dies wird dadurch begründet, dass die Python-Implementierung eine optimierte Version des Protobuf-Schemas für die Datenstrukturen verwendet. 
+
+XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deserialisierung von XML-Datensätzen schlägt in der Rust-Implementierung auch bereits bei kleinen Datensätzen ($\ge$ 4MB) fehl. In Python ist die Serialisierung von XML ca. 7 mal langsamer als das ansonsten langsamste Format, in Rust immerhin nur um den Faktor 1.3 im Vergleich zu Protobuf, und ebenfalls um den Faktor 7 zum ansonsten langsamsten Format. Diese Messergebnisse bestätigen die von \textit{Hericko et al.}. In deren Resultaten erfassen diese eine Spanne von 5-9 \cite{10.1145/944579.944589, Kapitel 5} zwischen den binären und nichtbinären Formaten. Diese relativ langsame Serialisierungs- und Deserialisierungszeit wird dadurch begründet, dass XML arbiträre Metadaten mit Tags assoziieren kann und die Datenhaltung und das Parsing damit erheblich komplexer ist als bei anderen Formaten ohne diese Funktionen \cite{10.1145/944579.944589, Kapitel 4.1}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit 256MB Integerliste in Python}
+  \label{fig:python_serde_256mb_intlist}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit 256MB Integerliste in Rust}
+  \label{fig:rust_serde_256mb_intlist}
+\end{figure}
+
+\autoref{fig:rust_serde_256mb_intlist} und \autoref{fig:python_serde_256mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten von ähnlichen, aber größeren Datensätzen mit jeweils 256MB an Nutzdaten. Während die absoluten Laufzeiten größer ausfallen, sind die relativen Laufzeiten der Formate untereinander nahezu identisch. Dies deutet darauf hin, dass alle getesteten Implementierungen annähernd linear skalieren. Auch diese Beobachtung bestätigt die Ergebnisse von \textit{Hericko et al.} \cite{10.1145/944579.944589, Figure 9}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/python_dataset_int_tree_small_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit Integerbaum in Python}
+  \label{fig:python_serde_8mb_inttree}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/graphs/rust_dataset_int_tree_small_json_combined_times.png}
+  \caption{Serialisierungs- und Deserialisierungszeit Integerbaum in Rust}
+  \label{fig:rust_serde_8mb_inttree}
+\end{figure}
+
+\autoref{fig:rust_serde_8mb_inttree} und \autoref{fig:python_serde_8mb_inttree} zeigen die Laufzeiten für eine Baumstruktur, die aus 4 Ebenen an Knoten besteht. Jeder Knoten speichert einen 32-Bit Integer, sowie 8 Kind-Knoten. Die Python-Implementierung zeigt ähnliche Performanz im Vergleich zu flachen Listen. Die relative Performanz der Formate in der Rust-Implementierung ist ebenfalls nahezu identisch, jedoch sticht Protobuf hier durch eine massiv erhöhte Serialisierungs- und Deserialisierungszeit hervor. Dies deutet darauf hin, dass komplexe Datenstrukturen in Protobuf vergleichsweise ineffizient serialisiert werden.
+
+\textcolor{red}{TODO: Noch ein Datensatz, um inhomogene Datensätze zu testen?}
+
+\subsection{Kompressionsrate}
+
+\textcolor{red}{TODO}
 
 \subsection{Implementierungsgüte}
 ... Graphen und so als Beispiel.

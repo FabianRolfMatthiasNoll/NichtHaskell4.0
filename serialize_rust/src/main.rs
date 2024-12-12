@@ -262,8 +262,9 @@ fn main() {
         if let Ok(file) = entry {
             let filename = String::from(file.file_name().to_str().unwrap());
             if file.file_type().unwrap().is_file() {
-                if let Ok(res) = evaluate_dataset(&filename) {
-                    results.extend(res);
+                match evaluate_dataset(&filename) {
+                    Ok(res) => results.extend(res),
+                    Err(err) => print!("failed: {}", err)
                 }
             }
         }
