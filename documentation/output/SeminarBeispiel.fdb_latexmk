@@ -1,5 +1,5 @@
 # Fdb version 4
-["bibtex output/SeminarBeispiel"] 0 "output/SeminarBeispiel.aux" "output/SeminarBeispiel.bbl" "output/SeminarBeispiel" 1734102377.3473 0
+["bibtex output/SeminarBeispiel"] 0 "output/SeminarBeispiel.aux" "output/SeminarBeispiel.bbl" "output/SeminarBeispiel" 1734103152.23911 0
   "/usr/share/texmf-dist/bibtex/bst/base/abbrv.bst" 1727349926 20329 b5fed53e10044d0f8112183785c759b1 ""
   "literatur.bib" 0 -1 0 ""
   "output/SeminarBeispiel.aux" 0 -1 0 "pdflatex"
@@ -7,8 +7,8 @@
   "output/SeminarBeispiel.bbl"
   "output/SeminarBeispiel.blg"
   (rewritten before read)
-["pdflatex"] 1734102376.44409 "/home/mrab/Desktop/storage/dhbw/NichtHaskell4.0/documentation/SeminarBeispiel.tex" "output/SeminarBeispiel.pdf" "SeminarBeispiel" 1734102377.34746 0
-  "/home/mrab/Desktop/storage/dhbw/NichtHaskell4.0/documentation/SeminarBeispiel.tex" 1734102375.37141 58466 b4216bde3cb95dc1523f06c060cca04a ""
+["pdflatex"] 1734103151.35332 "/home/mrab/Desktop/storage/dhbw/NichtHaskell4.0/documentation/SeminarBeispiel.tex" "output/SeminarBeispiel.pdf" "SeminarBeispiel" 1734103152.23928 0
+  "/home/mrab/Desktop/storage/dhbw/NichtHaskell4.0/documentation/SeminarBeispiel.tex" 1734103150.28816 59279 23902e8b5aa426c01deb08d90acb7bdf ""
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1727349926 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1727349926 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1727349926 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -128,7 +128,7 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1727349926 41588 b43d3e860a4f94167ee1e725ff526a72 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1733921264.29246 5312047 b07fcd2a9090df96fc745b92a3db793b ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1733921261 7603438 d619bba1954b7e0d8a4984d74b681d96 ""
-  "SeminarBeispiel.tex" 1734102375.37141 58466 b4216bde3cb95dc1523f06c060cca04a ""
+  "SeminarBeispiel.tex" 1734103150.28816 59279 23902e8b5aa426c01deb08d90acb7bdf ""
   "images/codegen_code.png" 1733751568.90654 62960 3f384ea018a3167b2438f0b7f3929ae4 ""
   "images/graphs/combined_compression_ratios.png" 1734099864.79558 69280 039c50bd1c340bb694be3ede45a65af1 ""
   "images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png" 1733923315.87568 26297 6d6f2fce38f1d9a5ab3a14a65e892b47 ""
@@ -137,9 +137,9 @@
   "images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png" 1733757914 29491 703023cc39233782352c9599f3c4a99b ""
   "images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png" 1733757914 29556 a570b778e2a2452ff7313dad140c9782 ""
   "images/graphs/rust_dataset_int_tree_small_json_combined_times.png" 1733757914 33312 a04e3cfae612c7174ced05e421d7ed97 ""
-  "output/SeminarBeispiel.aux" 1734102377.21148 8515 2054859882c4f8c616c40268a50f1f4c "pdflatex"
+  "output/SeminarBeispiel.aux" 1734103152.11489 8553 4c08b3bee31dd516d2169d1338623db3 "pdflatex"
   "output/SeminarBeispiel.bbl" 0 -1 0 "bibtex output/SeminarBeispiel"
-  "output/SeminarBeispiel.out" 1734102377.21815 5213 4c67a2ce7e41a47df86b5537a1797197 "pdflatex"
+  "output/SeminarBeispiel.out" 1734103152.12156 5213 4c67a2ce7e41a47df86b5537a1797197 "pdflatex"
   "seminarvorlage.cls" 1733472250.56538 47174 d237d45305a31b2098084fa1b92f209d ""
   (generated)
   "output/SeminarBeispiel.aux"

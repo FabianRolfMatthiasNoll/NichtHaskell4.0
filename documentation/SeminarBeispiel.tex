@@ -41,6 +41,8 @@ Die Serialisierung von Daten ist eine wesentliche Technik in der modernen Softwa
 % Jede Section am besten mit einem Kommentar hier im Quelltext markieren
 \section{Grundlagen}
 
+Das folgende Kapitel beschäftigt sich mit grundlegenden Begriffen, die für das Verständnis der weiteren Ausführungen unabdinglich sind.
+
 % Kurze Definition von Serialisierung und Deserialisierung
 \subsection{Serialisierung und Deserialisierung}
 Serialisierung bezeichnet den Prozess der Umwandlung komplexer Datenstrukturen oder Objekte in ein lineares Datenformat, das für die Speicherung oder Übertragung in verschiedenen Medien geeignet ist, wie beispielsweise Dateien oder Netzwerkprotokolle. Deserialisierung hingegen beschreibt den Vorgang, bei dem das lineare Datenformat analysiert und in die ursprüngliche Datenstruktur oder das objektorientierte Repräsentationsmodell zurückgeführt wird. Diese Prozesse sind essenziell für die Persistenz von Daten und die Kommunikation zwischen verteilten Systemen.
@@ -452,6 +454,8 @@ Insgesamt sind JSON und Protobuf aufgrund ihrer Standardisierung und umfassenden
 
 
 \section{Fazit}
+
+Im Folgenden wird eine Schlussfolgerung aus den Messergebnissen und bisherigen Resultaten abgeleitet.
 
 \subsection{JSON}
 JSON bewährte sich in den Tests als vielseitiges und einfach zu nutzendes Format. Durch seine menschenlesbare Struktur und die breite Unterstützung in nahezu allen gängigen Programmiersprachen eignet es sich besonders für Web-APIs, Konfigurationsdateien und Anwendungen, bei denen die Lesbarkeit eine zentrale Rolle spielt. Allerdings zeigte sich JSON wie erwartet in der Kompression und Performance den binären Formaten unterlegen, was insbesondere bei großen Datensätzen deutlich wurde. Die Ergebnisse stimmen mit bisherigen Studien überein, die JSONs Effizienz für die meisten allgemeinen Anwendungen bestätigen, jedoch auf Schwächen bei speicherintensiven Szenarien hinweisen. Trotz seiner Nachteile bleibt JSON eine ausgezeichnete Wahl für Szenarien, die eine Balance zwischen Lesbarkeit und Funktionalität erfordern.
