@@ -416,6 +416,8 @@ Alle anderen Formate erreichen durchgehend Kompressionsraten $\geq 1$, was bedeu
 
 JSON bildet ein durchweg gutes Mittelmaß über alle Datensätze. Die durchschnittliche Kompressionsrate von $\approx 4.2$ zeigt, dass auch nichtbinäre Formate gegenüber der nativen Repräsentation von Python-Objekten effizient serialisiert werden können.
 
+\newpage
+
 \subsection{Implementierungsgüte}
 Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst um die zwei Sprachen untereinander vergleichen zu können. Werte die größer Eins sind bedeuten das Rust hier um diesen Faktor besser performt hat.
 
@@ -428,7 +430,7 @@ Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst
     ProtoBuf           & 1.665640                & 1.915003                  & 0.106578               &  \\ \cline{1-4}
     XML                & 10.588883               & -                         & 86.795813              &  \\ \cline{1-4}
     \end{tabular}
-    \caption{Durschnittliche Faktoren einer Implementierung}
+    \caption{Relative Performance von Rust gegenüber Python}
 \end{table}
 
 Python zeigt in der Kompression durchweg bessere Ergebnisse als Rust. Dies liegt daran, dass Python-Objekte im Speicher eine vergleichsweise große Größe aufweisen, was dazu führt, dass die Daten nach der Serialisierung stärker komprimiert erscheinen. In der Serialisierungs- und Deserialisierungsgeschwindigkeit hingegen übertrifft Rust Python deutlich. Dies ist auf die native Kompilierung von Rust und die damit verbundene Optimierung auf niedriger Ebene zurückzuführen, wodurch Serialisierungsbibliotheken effizienter arbeiten können. Die Ergebnisse verdeutlichen, dass Rust besonders in Szenarien mit hohen Anforderungen an die Verarbeitungsgeschwindigkeit Vorteile bietet, während Python durch seine Speicherrepräsentation eine effektivere Kompression erreicht.
