@@ -416,6 +416,8 @@ Alle anderen Formate erreichen durchgehend Kompressionsraten $\geq 1$, was bedeu
 
 JSON bildet ein durchweg gutes Mittelmaß über alle Datensätze. Die durchschnittliche Kompressionsrate von $\approx 4.2$ zeigt, dass auch nichtbinäre Formate gegenüber der nativen Repräsentation von Python-Objekten effizient serialisiert werden können.
 
+\newpage
+
 \subsection{Implementierungsgüte}
 Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst um die zwei Sprachen untereinander vergleichen zu können. Werte die größer Eins sind bedeuten das Rust hier um diesen Faktor besser performt hat.
 
@@ -467,6 +469,8 @@ XML ist ein langsames und schwierig aufzusetzendes Format. Als es erschaffen wur
 \section{Ausblick}
 
 In Zukunft wäre es möglich diese Metriken zu erweitern sowie weitere Formate hinzuzufügen als auch die selbe Umgebung in mehreren Programmiersprachen zu testen um etwaige Implementierungsunterschiede durch eine größere Menge an Daten auszumerzen. Auch eine Aufteilung in die einzelnen Schritte eines Serialisierungs/Deserialisierungsprozess könnte interessante Erkenntnisse über etwaige Bottlenecks aufzeigen die sich in den Sprachen ergeben wie es in der bisher öfters genannten Arbeit zu den Vergleichen zwischen Java und .NET gemacht wurde \cite{10.1145/944579.944589}. 
+
+Ein weiteres interessantes Format für zukünftige Untersuchungen könnte Bebop sein, ein binäres Serialisierungsformat von Betwixt Labs. Bebop wurde speziell für Hochleistungsanwendungen entwickelt und verspricht minimalen Overhead bei gleichzeitig hoher Effizienz. Da dieses Format erst nach Abschluss der Arbeit entdeckt wurde, konnte es nicht in die Tests einbezogen werden. Eine zukünftige Analyse könnte jedoch spannende Einblicke in seine Leistung im Vergleich zu anderen Formaten wie Protobuf und MessagePack liefern. \cite{bebop_serialization}
 
 % Bibliographie entweder direkt hier eingeben (nur im Notfall)...
 %\begin{thebibliography}{9}
