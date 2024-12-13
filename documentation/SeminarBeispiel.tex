@@ -95,7 +95,7 @@ Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine
 
 Die minimale Größe eines einzelnen Zeichens sind 8 Bits. Daraus folgt, dass auch Booleans mindestens mit einem Zeichen repräsentiert werden. Daher gilt auch für Booleans $ M_{\text{textuell}} \geq M_{\text{binär}} $. Viele Formate verwenden die Literale ``true'' und ``false'', um die Lesbarkeit zu erhöhen. Angenommen, beide Werte treten gleich häufig auf, wird die Effizienz damit um den Faktor $\frac{4 + 5}{2} = 4.5$ gesenkt.
 
-Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung im Wertebereich angenommen. Zur Berechnung der durchschnittlichen Länge eines solchen Integers muss zunächst die durchschnittliche Anzahl der Dezimalstellen erfasst werden. Die Anzahl der Ganzzahlen mit n Stellen ist durch $10^n$ gegeben. Allerdings werden hierbei führende Nullen nicht berücksichtigt.Folgende Tabelle zeigt die tatsächliche Verteilung der positiven Ganzzahlen:
+Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung im Wertebereich angenommen. Dies ist in reellen Anwendungen nicht zwingend der Fall, beispielsweise sind kleinere Zahlen weitaus häufiger vertreten \cite{berger2015introduction}. Für die weitere Betrachtung wird dennoch die Gleichverteilung angenommen, da sie eine breite und theoretisch durchschnittliche Einschätzung ermöglicht. Zur Berechnung der durchschnittlichen Länge eines solchen Integers muss zunächst die durchschnittliche Anzahl der Dezimalstellen erfasst werden. Die Anzahl der Ganzzahlen mit n Stellen ist durch $10^n$ gegeben. Allerdings werden hierbei führende Nullen nicht berücksichtigt.Folgende Tabelle zeigt die tatsächliche Verteilung der positiven Ganzzahlen:
 
 \begin{table}[h]
   \centering
