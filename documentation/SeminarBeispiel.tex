@@ -451,6 +451,9 @@ Insgesamt sind JSON und Protobuf aufgrund ihrer Standardisierung und umfassenden
 
 \section{Fazit}
 
+\subsection{JSON}
+JSON bewährte sich in den Tests als vielseitiges und einfach zu nutzendes Format. Durch seine menschenlesbare Struktur und die breite Unterstützung in nahezu allen gängigen Programmiersprachen eignet es sich besonders für Web-APIs, Konfigurationsdateien und Anwendungen, bei denen die Lesbarkeit eine zentrale Rolle spielt. Allerdings zeigte sich JSON wie erwartet in der Kompression und Performance den binären Formaten unterlegen, was insbesondere bei großen Datensätzen deutlich wurde. Die Ergebnisse stimmen mit bisherigen Studien überein, die JSONs Effizienz für die meisten allgemeinen Anwendungen bestätigen, jedoch auf Schwächen bei speicherintensiven Szenarien hinweisen. Trotz seiner Nachteile bleibt JSON eine ausgezeichnete Wahl für Szenarien, die eine Balance zwischen Lesbarkeit und Funktionalität erfordern.
+
 \subsection{MessagePack}
 MessagePack überzeugte in den Tests durch seine herausragende Performance und die exzellente Speicherkompression. Es zeigte sich als das ressourcenschonendste Format, mit kurzen Serialisierungszeiten und minimalem Speicherbedarf. Besonders in ressourcenbeschränkten Umgebungen wie IoT- oder Echtzeitsystemen glänzt MessagePack. Ähnliche Erkenntnisse finden sich auch in den Analysen von ProgrammerAL \cite{ProgrammerAL_SerializationBenchmarks}, wo MessagePack im Vergleich zu anderen Formaten wie Protobuf und JSON hinsichtlich Geschwindigkeit und Speicherverbrauch überlegen war. Für Szenarien, in denen Effizienz entscheidend ist, stellt es eine ausgezeichnete Wahl dar.
 
