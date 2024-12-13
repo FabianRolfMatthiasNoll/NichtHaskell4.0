@@ -4,7 +4,9 @@
 \documentclass[ngerman]{seminarvorlage}
 % ngerman = Deutsch in neuer Rechtschreibung, alternativ english
 \usepackage{babel}[german] % automatische Sprachunterstützung
-
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000
 \usepackage[utf8]{inputenc} % Kodierung der Non-ASCII-Zeichen
 \usepackage[T1]{fontenc} % Moderne Fonts, Trennung von Wörtern mit Umlauten
 \usepackage{cleveref} % für bequeme Referenzen, siehe \cref unten
@@ -26,17 +28,17 @@
 }
 
 \maketitle% Titelangaben produzieren, aber kein Inhaltsverzeichnis, \tableofcontents funktioniert nicht!
-\newpage
+
 
 \abstract{In dieser Arbeit vergleichen wir binäre und nicht-binäre Serialisierungsformate mit dem Ziel, ihre Eignung für unterschiedliche Anwendungsbereiche zu evaluieren. Im Fokus stehen die Formate JSON, XML, ProtoBuf und MessagePack, die wir hinsichtlich ihrer Geschwindigkeit, Speicherbedarf und Wartbarkeit/Nutzbarkeit untersuchen. Durch eine Reihe von Tests und Analysen bewerten wir die Leistung der Formate in verschiedenen Szenarien und beleuchten deren Stärken und Schwächen. Darüber hinaus erörtern wir die jeweiligen Vor- und Nachteile in spezifischen Anwendungsgebieten, um eine fundierte Entscheidungsgrundlage für die Auswahl des passenden Serialisierungsformats in der Praxis zu bieten.}
 
-\keywords{Serialisierungsformate, JSON, XML, ProtoBuf, 
-MessagePack, Binäre Serialisierung, Nicht-binäre Serialisierung,
+\keywords{Serialisierung, JSON, XML, ProtoBuf, 
+MessagePack, Binär, Nicht-binäre,
 Datenformatvergleich, Anwendungsgebiete}
 
 % Section-Überschriften werden automatisch in GROSSBUCHSTABEN gesetzt
 \section{Einleitung}
-Die Serialisierung von Daten ist eine wesentliche Technik in der modernen Softwareentwicklung, die den Austausch und die Persistenz von Informationen zwischen Systemen ermöglicht. In der heutigen Vielfalt an Serialisierungsformaten stehen Entwickler und Architekten vor der Herausforderung, das richtige Format für spezifische Anwendungsfälle zu wählen. Dabei spielen Aspekte wie Effizienz, Lesbarkeit, Wartbarkeit und Kompatibilität eine entscheidende Rolle. Diese Arbeit untersucht und vergleicht ausgewählte binäre und nicht-binäre Serialisierungsformate – JSON, XML, Protocol Buffers und MessagePack – unter Berücksichtigung objektiver Kriterien wie Geschwindigkeit, Speicherbedarf und Implementierungsgüte. Ziel ist es, eine systematische Bewertung der Formate zu liefern, die als Orientierungshilfe für praktische Entscheidungen dient. Der Beitrag dieser Analyse liegt nicht nur in der Gegenüberstellung der technischen Merkmale, sondern auch in der Berücksichtigung von Anwendungsbereichen und realen Herausforderungen bei der Implementierung.
+Die Serialisierung von Daten ist eine wesentliche Technik in der modernen Softwareentwicklung, die den Austausch und die Persistenz von Informationen zwischen Systemen ermöglicht. In der heutigen Vielfalt an Serialisierungsformaten stehen Entwickler vor der Herausforderung, das richtige Format für spezifische Anwendungsfälle zu wählen. Dabei spielen Aspekte wie Effizienz, Lesbarkeit, Wartbarkeit und Kompatibilität eine entscheidende Rolle. Diese Arbeit untersucht und vergleicht ausgewählte binäre und nicht-binäre Serialisierungsformate – JSON, XML, Protocol Buffers und MessagePack – unter Berücksichtigung objektiver Kriterien wie Geschwindigkeit, Speicherbedarf und Implementierungsgüte. Ziel ist es, eine systematische Bewertung der Formate zu liefern, die als Orientierungshilfe für praktische Entscheidungen dient. Der Beitrag dieser Analyse liegt nicht nur in der Gegenüberstellung der technischen Merkmale, sondern auch in der Berücksichtigung von Anwendungsbereichen und realen Herausforderungen bei der Implementierung.
 
 % Jede Section am besten mit einem Kommentar hier im Quelltext markieren
 \section{Grundlagen}
@@ -47,15 +49,12 @@ Das folgende Kapitel beschäftigt sich mit grundlegenden Begriffen, die für das
 \subsection{Serialisierung und Deserialisierung}
 Serialisierung bezeichnet den Prozess der Umwandlung komplexer Datenstrukturen oder Objekte in ein lineares Datenformat, das für die Speicherung oder Übertragung in verschiedenen Medien geeignet ist, wie beispielsweise Dateien oder Netzwerkprotokolle. Deserialisierung hingegen beschreibt den Vorgang, bei dem das lineare Datenformat analysiert und in die ursprüngliche Datenstruktur oder das objektorientierte Repräsentationsmodell zurückgeführt wird. Diese Prozesse sind essenziell für die Persistenz von Daten und die Kommunikation zwischen verteilten Systemen.
 
-% Kurze Gegenüberstellung von binären und nicht binären Formaten, Vor- und Nachteile
 \subsection{Binäre vs. Nicht-Binäre Formate}
 Binäre und nichtbinäre Serialisierungsformate unterscheiden sich grundlegend in der Art und Weise, wie sie Daten speichern und übertragen. Binäre Formate wie Protobuf oder MessagePack codieren Daten in einem kompakten, maschinenlesbaren Format, was ihnen eine hohe Effizienz sowohl hinsichtlich der Speichernutzung als auch der Verarbeitungsgeschwindigkeit verleiht. Diese Formate sind ideal für Systeme, in denen Performance eine zentrale Rolle spielt, wie bei der Kommunikation zwischen Microservices oder in Anwendungen mit begrenzter Bandbreite. Ein Nachteil dieser Formate ist jedoch, dass sie nicht von Menschen direkt gelesen werden können. Dies bedeutet, dass spezielle Tools oder Software nötig sind, um den Inhalt zu interpretieren, was die Fehlersuche und das Debuggen erschweren kann.
 
 Nichtbinäre Formate wie XML oder JSON speichern Daten in einem textbasierten, menschenlesbaren Format. Ein klarer Vorteil ist die einfache Lesbarkeit und Bearbeitbarkeit, da Entwickler und Nutzer ohne spezielle Software die Inhalte direkt inspizieren und ändern können. Diese Eigenschaft macht sie besonders geeignet für Konfigurationsdateien, Datenformate, die von Menschen überprüft werden müssen, oder APIs, bei denen Klarheit und Transparenz im Vordergrund stehen. Der Nachteil liegt in der ineffizienteren Speichernutzung und der geringeren Performanz, da diese Formate mehr Speicherplatz benötigen und der Parsing-Prozess langsamer ist als bei binären Formaten. XML zum Beispiel erzeugt durch seine umfangreichen Tags oft eine größere Datenmenge, während JSON kompakter ist, aber dennoch die Nachteile von Textformaten teilt.
 
 In Bezug auf den Einsatzbereich sind binäre Formate aufgrund ihrer Effizienz und hohen Geschwindigkeit in Bereichen wie Embedded Systems, Kommunikationsprotokollen und Cloud-basierten Diensten weit verbreitet. Nichtbinäre Formate hingegen finden häufig in Bereichen Anwendung, in denen eine einfache Handhabung und schnelle Lesbarkeit durch Menschen wichtiger sind als die absolute Performance, wie z.B. bei Datenübertragungen im Web oder bei einfachen Konfigurationsdateien. Während binäre Formate eine bessere Performance und Speicheroptimierung bieten, sind textbasierte Formate flexibler und einfacher in der Nutzung und im Austausch.
-
-\newpage
  
 \subsection{Serialisierung vs. Komprimierung}
 
@@ -77,6 +76,7 @@ Jedes Serialisierungsformat hat ein unteres Limit bezüglich des benötigten Spe
   $string_n$  & $[0, 1114112]^n$           & $8 \cdot n \leq 32 \cdot n$ Bits \\
   \hline
   \end{tabular}
+  \caption{Wertebereich und Speicherverbraucher gängiger primitiver Datentypen}
 \end{table}
 
 Die aufgeführten Größen sind in vielen gängigen Programmiersprachen vertreten (C, C++, Java, Rust). Bei Zeichenketten wird von einer UTF-8 kompatiblen Implementation ausgegangen. Moderne Programmiersprachen unterstützen die effizientere Darstellung von mehreren Booleans in einem Byte. Da dies aber nicht in jeder Sprache der Fall ist, wird diese Optimierung nicht berücksichtigt.
@@ -97,9 +97,9 @@ Angenommen, das Serialisierungsziel unterstützt UTF-8, benötigen Strings keine
 
 Die minimale Größe eines einzelnen Zeichens sind 8 Bits. Daraus folgt, dass auch Booleans mindestens mit einem Zeichen repräsentiert werden. Daher gilt auch für Booleans $ M_{\text{textuell}} \geq M_{\text{binär}} $. Viele Formate verwenden die Literale ``true'' und ``false'', um die Lesbarkeit zu erhöhen. Angenommen, beide Werte treten gleich häufig auf, wird die Effizienz damit um den Faktor $\frac{4 + 5}{2} = 4.5$ gesenkt.
 
-Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung im Wertebereich angenommen. Dies ist in reellen Anwendungen nicht zwingend der Fall, beispielsweise sind kleinere Zahlen weitaus häufiger vertreten \cite{berger2015introduction}. Für die weitere Betrachtung wird dennoch die Gleichverteilung angenommen, da sie eine breite und theoretisch durchschnittliche Einschätzung ermöglicht. Zur Berechnung der durchschnittlichen Länge eines solchen Integers muss zunächst die durchschnittliche Anzahl der Dezimalstellen erfasst werden. Die Anzahl der Ganzzahlen mit n Stellen ist durch $10^n$ gegeben. Allerdings werden hierbei führende Nullen nicht berücksichtigt.Folgende Tabelle zeigt die tatsächliche Verteilung der positiven Ganzzahlen:
+Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung im Wertebereich angenommen. Dies ist in reellen Anwendungen nicht zwingend der Fall, beispielsweise sind kleinere Zahlen weitaus häufiger vertreten \cite{berger2015introduction}. Für die weitere Betrachtung wird dennoch die Gleichverteilung angenommen, da sie eine breite und theoretisch durchschnittliche Einschätzung ermöglicht. Zur Berechnung der durchschnittlichen Länge eines solchen Integers muss zunächst die durchschnittliche Anzahl der Dezimalstellen erfasst werden. Die Anzahl der Ganzzahlen mit n Stellen ist durch $10^n$ gegeben. Allerdings werden hierbei führende Nullen nicht berücksichtigt. Folgende Tabelle zeigt die tatsächliche Verteilung der positiven Ganzzahlen:
 
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \begin{tabular}{|l|l|l|l|} 
   \hline
@@ -117,6 +117,7 @@ Für die Serialisierung von Integern wird ebenfalls von einer Gleichverteilung i
   1000000000             & 2147483648            & 1147483649      & 10                       \\
   \hline
   \end{tabular}
+  \caption{Verteilung positiver Ganzzahlen 32-Bit Integer}
 \end{table}
 
 Das arithmetische Mittel der Länge wird wie folgt berechnet:
@@ -258,7 +259,7 @@ Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten z
     \caption{Verwendete Technologien der Messreihe}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|l|}
 \hline
@@ -317,7 +318,7 @@ Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten z
     \caption{Verwendete Technologien der Messreihe}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
   \centering
   \begin{tabular}{|l|l|}
   \hline
@@ -361,6 +362,8 @@ Die Messergebnisse variieren je nach Aufbau des Datensatzes.
   \label{fig:rust_serde_8mb_intlist}
 \end{figure}
 
+\newpage
+
 \autoref{fig:python_serde_8mb_intlist} und \autoref{fig:rust_serde_8mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten der getesteten Formate für eine flache Liste von 32-Bit Integern von jeweils ca. 8MB. Zu sehen ist die allgemein um ca. eine Größenordnung kürzere Laufzeit aller Formate in Rust gegenüber Python, was dadurch begründet werden kann, dass Python eine interpretierte Programmiersprache ist. Mit Ausnahme von XML schneiden in der Python-Implementierung alle Formate ähnlich gut ab. In der Rust-Implementierung sticht zusätzlich Protobuf als langsameres Format hervor. Dies wird dadurch begründet, dass die Python-Implementierung eine optimierte Version des Protobuf-Schemas für die Datenstrukturen verwendet. 
 
 XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deserialisierung von XML-Datensätzen schlägt in der Rust-Implementierung auch bereits bei kleinen Datensätzen ($\ge$ 4MB) fehl. In Python ist die Serialisierung von XML ca. 7 mal langsamer als das ansonsten langsamste Format, in Rust immerhin nur um den Faktor 1.3 im Vergleich zu Protobuf, und ebenfalls um den Faktor 7 zum ansonsten langsamsten Format. Diese Messergebnisse bestätigen die von \textit{Hericko et al.}. In deren Resultaten erfassen diese eine Spanne von 5-9 \cite[ Kapitel 5]{10.1145/944579.944589} zwischen den binären und nichtbinären Formaten. Diese relativ langsame Serialisierungs- und Deserialisierungszeit wird dadurch begründet, dass XML arbiträre Metadaten mit Tags assoziieren kann und die Datenhaltung und das Parsing damit erheblich komplexer ist als bei anderen Formaten ohne diese Funktionen \cite[Kapitel 4.1]{10.1145/944579.944589}.
@@ -397,6 +400,8 @@ XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deseri
 
 \autoref{fig:rust_serde_8mb_inttree} und \autoref{fig:python_serde_8mb_inttree} zeigen die Laufzeiten für eine Baumstruktur, die aus 4 Ebenen an Knoten besteht. Jeder Knoten speichert einen 32-Bit Integer, sowie 8 Kind-Knoten. Die Python-Implementierung zeigt ähnliche Performanz im Vergleich zu flachen Listen. Die relative Performanz der Formate in der Rust-Implementierung ist ebenfalls nahezu identisch, jedoch sticht Protobuf hier durch eine massiv erhöhte Serialisierungs- und Deserialisierungszeit hervor. Dies deutet darauf hin, dass komplexe Datenstrukturen in Protobuf vergleichsweise ineffizient serialisiert werden.
 
+\newpage
+
 \subsection{Kompressionsrate}
 
 Die Kompressionsrate errechnet sich wie folgt:
@@ -408,7 +413,7 @@ Dabei kann $ Bytes_\text{roh} $ entweder die tatsächliche Größe der Datenobje
 \begin{figure*}[t] % Sternchen sorgt dafür, dass die Grafik über beide Spalten geht
   \centering
   \includegraphics[width=\textwidth]{images/graphs/combined_compression_ratios.png} % Breite über gesamte Seitenbreite
-  \caption{Kompressionsraten}
+  \caption{Relative Kompressionsraten von Python Objekten}
   \label{fig:compression_ratios}
 \end{figure*}
 
@@ -418,12 +423,11 @@ Alle anderen Formate erreichen durchgehend Kompressionsraten $\geq 1$, was bedeu
 
 JSON bildet ein durchweg gutes Mittelmaß über alle Datensätze. Die durchschnittliche Kompressionsrate von $\approx 4.2$ zeigt, dass auch nichtbinäre Formate gegenüber der nativen Repräsentation von Python-Objekten effizient serialisiert werden können.
 
-\newpage
-
 \subsection{Implementierungsgüte}
 Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst um die zwei Sprachen untereinander vergleichen zu können. Werte die größer Eins sind bedeuten das Rust hier um diesen Faktor besser performt hat.
 
 \begin{table}[H]
+    \resizebox{\columnwidth}{!}{% Adjust to fit column width
     \begin{tabular}{|l|l|l|l|l}
     \cline{1-4}
     \textbf{Protokoll} & \textbf{Serialisierung} & \textbf{Deserialisierung} & \textbf{Kompression} &  \\ \cline{1-4}
@@ -431,7 +435,7 @@ Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst
     MessagePack        & 5.909328                & 2.354893                  & 0.205478               &  \\ \cline{1-4}
     ProtoBuf           & 1.665640                & 1.915003                  & 0.106578               &  \\ \cline{1-4}
     XML                & 10.588883               & -                         & 86.795813              &  \\ \cline{1-4}
-    \end{tabular}
+    \end{tabular}}
     \caption{Relative Performance von Rust gegenüber Python}
 \end{table}
 
@@ -494,8 +498,7 @@ Ein weiteres interessantes Format für zukünftige Untersuchungen könnte Bebop 
 % ... oder die Bibliographie mit Hilfe von BibTeX generieren,
 % dies ist auf jeden Fall die bessere Lösung und sollte nach
 % Möglichkeit immer verwendet werden:
-
-\newpage 
+\newpage
 \bibliographystyle{abbrv}
 \bibliography{literatur} % Daten aus der Datei literatur.bib verwenden.
 
