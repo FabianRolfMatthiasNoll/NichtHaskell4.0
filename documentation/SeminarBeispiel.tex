@@ -424,10 +424,13 @@ Insgesamt sind JSON und Protobuf aufgrund ihrer Standardisierung und umfassenden
 
 \section{Fazit}
 
-\subsection{}
+\subsection{MessagePack}
+MessagePack überzeugte in den Tests durch seine herausragende Performance und die exzellente Speicherkompression. Es zeigte sich als das ressourcenschonendste Format, mit kurzen Serialisierungszeiten und minimalem Speicherbedarf. Besonders in ressourcenbeschränkten Umgebungen wie IoT- oder Echtzeitsystemen glänzt MessagePack. Ähnliche Erkenntnisse finden sich auch in den Analysen von ProgrammerAL \cite{ProgrammerAL_SerializationBenchmarks}, wo MessagePack im Vergleich zu anderen Formaten wie Protobuf und JSON hinsichtlich Geschwindigkeit und Speicherverbrauch überlegen war. Für Szenarien, in denen Effizienz entscheidend ist, stellt es eine ausgezeichnete Wahl dar.
+
+\subsection{ProtoBuf}
+Protobuf zeigte in den Tests gute Ergebnisse bei der Kompression und Serialisierungszeit, insbesondere bei einfacheren Datensätzen. Für komplexe Strukturen nahm die Laufzeit jedoch spürbar zu, was die Effizienz im Vergleich zu MessagePack etwas beeinträchtigte. Seine strikte Typisierung und die Nutzung von Schema-Dateien (.proto) machen Protobuf besonders für stark typisierte Anwendungen attraktiv, wie sie in Microservices-Architekturen häufig vorkommen. Diese Ergebnisse decken sich mit der Studie von Nate \cite{Nate10_2024}, die Protobuf für Websockets hinsichtlich Effizienz und Strukturierung als eine der besten Optionen bewertet hat. Protobuf bleibt eine ausgezeichnete Wahl für Systeme, die auf klar definierte Strukturen und effiziente Datenübertragung angewiesen sind.
 
 \subsection{XML}
-
 XML ist ein langsames und schwierig aufzusetzendes Format. Als es erschaffen wurde hat es einige Probleme gelöst doch über die Jahre wurden für viele Probleme spezialisierte Lösungen geschaffen die deutlich effizienter sind als XML. Auch in den hier durchgeführten Testreihen hat sich die allgemeine Komplexität als auch ein sehr hoher Ressourcenverbrauch deutlich gezeigt \cite{Pommerenig_2019}. XML wird meist noch noch für Legacy Projekte verwendet doch in Bereichen der Datenübertragung oder in modernen Webanwendungen haben andere Protokolle meist die Oberhand.
 
 
