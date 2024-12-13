@@ -85,6 +85,22 @@ fn generate_dataset_flat_floatlist(size_in_bytes: usize) -> SerializableData {
     random_list(size_in_bytes / 4, random_float)
 }
 
+fn generate_dataset_flat_mixedlist(size_in_bytes: usize) -> SerializableData {
+    const STRING_LENGTH: usize = 16;
+
+    let average_size_of_member = (4.0 + 8.0 + 4.0 + 8.0 + 1.0 + STRING_LENGTH as f32) / 6.0;
+    let num_members = (size_in_bytes as f32 / average_size_of_member).ceil() as usize;
+
+    random_list(num_members, || random_choice(vec![
+        random_int,
+        random_bigint,
+        random_float,
+        random_bigfloat,
+        random_boolean,
+        || random_string(STRING_LENGTH)
+    ]))
+}
+
 fn generate_dataset_deep_flat_floatlist(depth: usize, size_in_bytes: usize) -> SerializableData {
     if depth == 0 {
         generate_dataset_flat_floatlist(size_in_bytes)
@@ -191,6 +207,12 @@ fn generate_datasets() {
     std::fs::write(format!("{}/dataset_int_tree_large.json", DATASET_DIR), &serialized).unwrap();
     drop(dataset);
     drop(serialized);
+
+    let dataset = generate_dataset_flat_mixedlist((2 as usize).pow(28));
+    let serialized = JSONSerializer::serialize(&dataset).unwrap();
+    std::fs::write(format!("{}/dataset_mixed_list_256MB.json", DATASET_DIR), &serialized).unwrap();
+    drop(dataset);
+    drop(serialized);
 }
 
 fn fetch_sysinfo() -> SysInfo {
@@ -254,7 +276,8 @@ fn evaluate_dataset(file: &str) -> Result<Vec<DatasetResult>, String> {
 }
 
 fn main() {
-    //generate_datasets();
+    generate_datasets();
+    return;
 
     let mut results: Vec<DatasetResult> = Vec::new();
 

@@ -266,6 +266,11 @@ INPUT ./images/graphs/rust_dataset_int_tree_small_json_combined_times.png
 INPUT ./images/graphs/rust_dataset_int_tree_small_json_combined_times.png
 INPUT ./images/graphs/rust_dataset_int_tree_small_json_combined_times.png
 INPUT ./images/graphs/rust_dataset_int_tree_small_json_combined_times.png
+INPUT ./images/graphs/combined_compression_ratios.png
+INPUT ./images/graphs/combined_compression_ratios.png
+INPUT ./images/graphs/combined_compression_ratios.png
+INPUT ./images/graphs/combined_compression_ratios.png
+INPUT ./images/graphs/combined_compression_ratios.png
 INPUT output/SeminarBeispiel.aux
 INPUT output/SeminarBeispiel.out
 INPUT output/SeminarBeispiel.out

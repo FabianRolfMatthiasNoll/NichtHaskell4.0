@@ -317,6 +317,20 @@ Die in der Tabelle dargestellten Versionen der verwendeten Softwarekomponenten z
     \caption{Verwendete Technologien der Messreihe}
 \end{table}
 
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|l|}
+  \hline
+  \textbf{Komponente}         & \textbf{Details}                     \\ \hline
+  Betriebssystem              & Manjaro Linux                        \\ \hline
+  Prozessor                   & AMD Ryzen 9 5900X                    \\ \hline
+  Prozessor-Details           & 64 MB Cache, bis zu 4.9 GHz          \\ \hline
+  Arbeitsspeicher             & 32 GB (2x16 GB DDR5, 4800 MHz)       \\ \hline
+  \end{tabular}
+  \caption{Für die Messreihe verwendete Hardware}
+  \label{tab:hardware_rust}
+\end{table}
+
 Der Ablauf des Testing-Prozesses geschieht ähnlich zur Python-Implementierung in einem strukturierten und standardisierten Ablauf. Auch hier wird der gesamte Datensatz zunächst in den Speicher geladen, um IO-Performanz von der Messung auszuschließen. Ebenso werden alle Datensätze sequentiell geladen und mehrfach für jedes Serialisierungsformat serialisiert und anschließend deserialisiert, um statistische Schwankungen zu minimieren. Zur Ausgabe der Ergebnisse wird das gleiche, JSON-basierte Format verwendet. Dadurch können die Messergebnisse mit den gleichen Tools verarbeitet und analysiert werden. Ebenso wurden die gleichen Daten über die Hardwareumgebung erfasst, wie es für die Python-Implementierung der Fall ist.
 
 Die Implementierung geschieht mit Hilfe des weit-verbreiteten \cite{serde} Frameworks ``Serde''. Alle getesteten Formate außer Protobuf werden von Serde unterstützt. (Protobuf unterstützt aktuell nur Deserialisierung, aber keine Serialisierung. Deshalb wird auf das zusätzliche Crate ``protobuf'' zurückgegriffen.). Dazu wird zunächst eine generische Implementierung der beiden Traits ``Serialize'' und ``Deserialize'' umgesetzt. Innerhalb dieser Implementierung wird beschrieben, wie Serde den zentralen Datentyp in Serde-Datentypen transformieren soll. Anschließend können vorgegebene Funktionen genutzt werden, um die Serialisierung und Deserialisierung in verschiedene Formate vorzunehmen. Die Implementierung fällt daher vergleichsweise kompakt und simpel aus. Für Protobuf werden zunächst über den Protobuf Compiler (protoc) eine .proto-Datei generiert. Mit Hilfe dieser Datei und des Rust-Crates ``protobuf'' kann über einen einzigen Funktionsaufruf die Serialisierung und Deserialisierung implementiert werden. Anders als bei Python zeigt die automatisch generierte Protobuf-Datei im Test gute Performanz bei der Serialisierung.
@@ -349,7 +363,7 @@ Die Messergebnisse variieren je nach Aufbau des Datensatzes.
 
 \autoref{fig:python_serde_8mb_intlist} und \autoref{fig:rust_serde_8mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten der getesteten Formate für eine flache Liste von 32-Bit Integern von jeweils ca. 8MB. Zu sehen ist die allgemein um ca. eine Größenordnung kürzere Laufzeit aller Formate in Rust gegenüber Python, was dadurch begründet werden kann, dass Python eine interpretierte Programmiersprache ist. Mit Ausnahme von XML schneiden in der Python-Implementierung alle Formate ähnlich gut ab. In der Rust-Implementierung sticht zusätzlich Protobuf als langsameres Format hervor. Dies wird dadurch begründet, dass die Python-Implementierung eine optimierte Version des Protobuf-Schemas für die Datenstrukturen verwendet. 
 
-XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deserialisierung von XML-Datensätzen schlägt in der Rust-Implementierung auch bereits bei kleinen Datensätzen ($\ge$ 4MB) fehl. In Python ist die Serialisierung von XML ca. 7 mal langsamer als das ansonsten langsamste Format, in Rust immerhin nur um den Faktor 1.3 im Vergleich zu Protobuf, und ebenfalls um den Faktor 7 zum ansonsten langsamsten Format. Diese Messergebnisse bestätigen die von \textit{Hericko et al.}. In deren Resultaten erfassen diese eine Spanne von 5-9 \cite{10.1145/944579.944589, Kapitel 5} zwischen den binären und nichtbinären Formaten. Diese relativ langsame Serialisierungs- und Deserialisierungszeit wird dadurch begründet, dass XML arbiträre Metadaten mit Tags assoziieren kann und die Datenhaltung und das Parsing damit erheblich komplexer ist als bei anderen Formaten ohne diese Funktionen \cite{10.1145/944579.944589, Kapitel 4.1}.
+XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deserialisierung von XML-Datensätzen schlägt in der Rust-Implementierung auch bereits bei kleinen Datensätzen ($\ge$ 4MB) fehl. In Python ist die Serialisierung von XML ca. 7 mal langsamer als das ansonsten langsamste Format, in Rust immerhin nur um den Faktor 1.3 im Vergleich zu Protobuf, und ebenfalls um den Faktor 7 zum ansonsten langsamsten Format. Diese Messergebnisse bestätigen die von \textit{Hericko et al.}. In deren Resultaten erfassen diese eine Spanne von 5-9 \cite[ Kapitel 5]{10.1145/944579.944589} zwischen den binären und nichtbinären Formaten. Diese relativ langsame Serialisierungs- und Deserialisierungszeit wird dadurch begründet, dass XML arbiträre Metadaten mit Tags assoziieren kann und die Datenhaltung und das Parsing damit erheblich komplexer ist als bei anderen Formaten ohne diese Funktionen \cite[Kapitel 4.1]{10.1145/944579.944589}.
 
 \begin{figure}[h]
   \centering
@@ -365,7 +379,7 @@ XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deseri
   \label{fig:rust_serde_256mb_intlist}
 \end{figure}
 
-\autoref{fig:rust_serde_256mb_intlist} und \autoref{fig:python_serde_256mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten von ähnlichen, aber größeren Datensätzen mit jeweils 256MB an Nutzdaten. Während die absoluten Laufzeiten größer ausfallen, sind die relativen Laufzeiten der Formate untereinander nahezu identisch. Dies deutet darauf hin, dass alle getesteten Implementierungen annähernd linear skalieren. Auch diese Beobachtung bestätigt die Ergebnisse von \textit{Hericko et al.} \cite{10.1145/944579.944589, Figure 9}.
+\autoref{fig:rust_serde_256mb_intlist} und \autoref{fig:python_serde_256mb_intlist} zeigen die Serialisierungs- und Deserialisierungslaufzeiten von ähnlichen, aber größeren Datensätzen mit jeweils 256MB an Nutzdaten. Während die absoluten Laufzeiten größer ausfallen, sind die relativen Laufzeiten der Formate untereinander nahezu identisch. Dies deutet darauf hin, dass alle getesteten Implementierungen annähernd linear skalieren. Auch diese Beobachtung bestätigt die Ergebnisse von \textit{Hericko et al.} \cite[Figure 9]{10.1145/944579.944589}.
 
 \begin{figure}[h]
   \centering
@@ -383,11 +397,26 @@ XML sticht in beiden Implementierungen als langsamstes Format hervor. Die Deseri
 
 \autoref{fig:rust_serde_8mb_inttree} und \autoref{fig:python_serde_8mb_inttree} zeigen die Laufzeiten für eine Baumstruktur, die aus 4 Ebenen an Knoten besteht. Jeder Knoten speichert einen 32-Bit Integer, sowie 8 Kind-Knoten. Die Python-Implementierung zeigt ähnliche Performanz im Vergleich zu flachen Listen. Die relative Performanz der Formate in der Rust-Implementierung ist ebenfalls nahezu identisch, jedoch sticht Protobuf hier durch eine massiv erhöhte Serialisierungs- und Deserialisierungszeit hervor. Dies deutet darauf hin, dass komplexe Datenstrukturen in Protobuf vergleichsweise ineffizient serialisiert werden.
 
-\textcolor{red}{TODO: Noch ein Datensatz, um inhomogene Datensätze zu testen?}
-
 \subsection{Kompressionsrate}
 
-\textcolor{red}{TODO}
+Die Kompressionsrate errechnet sich wie folgt:
+
+$$ K = \frac{Bytes_\text{roh}}{Bytes_\text{serialisiert}} $$
+
+Dabei kann $ Bytes_\text{roh} $ entweder die tatsächliche Größe der Datenobjekte im Arbeitsspeicher sein, oder die Größe der Nutzlast. \autoref{fig:compression_ratios} zeigt die Kompressionsraten von Ersterem, wobei sich die Größe der Datenobjekte auf die Python-Implementierung bezieht. Werden nur die Nutzdaten bewertet, wird die gesamte Ergebnisreihe um einen konstanten Faktor skaliert. Für den Vergleich mehrerer Implementierungen ist dieser Faktor unerheblich, da nur die relativen Messungen innerhalb einer Implementierung relevante Vergleichsmetriken bilden.
+
+\begin{figure*}[t] % Sternchen sorgt dafür, dass die Grafik über beide Spalten geht
+  \centering
+  \includegraphics[width=\textwidth]{images/graphs/combined_compression_ratios.png} % Breite über gesamte Seitenbreite
+  \caption{Kompressionsraten}
+  \label{fig:compression_ratios}
+\end{figure*}
+
+Die Grafik zeigt, dass erneut XML als das mit Abstand suboptimalste Format herraussticht. Da jeder Datenpunkt mit einem eigenen Paar aus Delimitierungs-Tags gekennzeichnet sein muss, ist das Verhältnis von Nutzlast zu Metainformationen deutlich geringer als in allen anderen Formaten. Es ergibt sich eine durchschnittliche Kompressionsrate von $\approx 0.04$ über alle getesteten Datensätze. Das bedeutet, dass jedes Byte eines Python-Objektes ca. 25 Bytes an serialisierten Daten produziert. Diese Kompressionsrate verschlechtert sich mit zunehmender Tiefe und Komplexität der Datenstrukturen.
+
+Alle anderen Formate erreichen durchgehend Kompressionsraten $\geq 1$, was bedeutet, dass die serialisierte Datenmenge kleiner ist als die Python-Datenobjekte. Simple Datenstrukturen wie Listen werden von Protobuf und Messagepack am effizientesten serialisiert, wobei Messagepack Integer und Protobuf Floats effizienter kodiert. Auffällig ist zudem die extrem hohe Kompressionsrate des Integer-Baum-Datensatzes, bei dem Protobuf einen Wert von $61.74$ erreicht. Daraus wird klar, dass die Metadaten, die Python für das Speichern von solchen Strukturen benötigt, sehr platzsparend von Protobuf (und auch den anderen Formaten) serialisiert werden können.
+
+JSON bildet ein durchweg gutes Mittelmaß über alle Datensätze. Die durchschnittliche Kompressionsrate von $\approx 4.2$ zeigt, dass auch nichtbinäre Formate gegenüber der nativen Repräsentation von Python-Objekten effizient serialisiert werden können.
 
 \subsection{Implementierungsgüte}
 Im folgenden wurden alle Messeregebnisse normalisiert und ein Durschnitt erfasst um die zwei Sprachen untereinander vergleichen zu können. Werte die größer Eins sind bedeuten das Rust hier um diesen Faktor besser performt hat.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Arch Linux) (preloaded format=pdflatex 2024.12.11)  11 DEC 2024 15:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Arch Linux) (preloaded format=pdflatex 2024.12.11)  13 DEC 2024 15:39
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -464,7 +464,7 @@ LaTeX Warning: Citation `w3c_xml' on page 4 undefined on input line 176.
 LaTeX Warning: Citation `protobuf' on page 4 undefined on input line 179.
 
 [4]
-<images/codegen_code.png, id=135, 991.705pt x 457.71pt>
+<images/codegen_code.png, id=151, 991.705pt x 457.71pt>
 File: images/codegen_code.png Graphic file (type png)
 <use images/codegen_code.png>
 Package pdftex.def Info: images/codegen_code.png  used on input line 225.
@@ -494,143 +494,159 @@ Underfull \hbox (badness 1087) in paragraph at lines 289--290
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
+Overfull \hbox (8.93187pt too wide) in paragraph at lines 322--330
+ [][] 
+ []
 
-LaTeX Warning: Citation `serde' on page 7 undefined on input line 322.
+
+LaTeX Warning: Citation `serde' on page 7 undefined on input line 336.
 
 
-Underfull \hbox (badness 2922) in paragraph at lines 322--323
+Underfull \hbox (badness 2922) in paragraph at lines 336--337
 []\T1/ptm/m/n/10 Die Im-ple-men-tie-rung ge-schieht mit Hil-fe des weit-
  []
 
-<images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png, id=150, 722.7pt x 433.62pt>
+<images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png, id=167, 722.7pt x 433.62pt>
 File: images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png Graphic file (type png)
 <use images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png>
-Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 338.
+Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 352.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 338--339
+Overfull \hbox (12.0pt too wide) in paragraph at lines 352--353
  [][] 
  []
 
-<images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png, id=151, 722.7pt x 433.62pt>
+<images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png, id=168, 722.7pt x 433.62pt>
 File: images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png Graphic file (type png)
 <use images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png>
-Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 345.
+Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png  used on input line 359.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 345--346
+Overfull \hbox (12.0pt too wide) in paragraph at lines 359--360
  [][] 
  []
 
 
-Underfull \hbox (badness 1635) in paragraph at lines 350--351
+Underfull \hbox (badness 1635) in paragraph at lines 364--365
 \T1/ptm/m/n/10 vor. Dies wird da-durch be-grün-det, dass die Python-
  []
 
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 352.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 366.
 
 
-LaTeX Warning: Citation `Kapitel 5' on page 7 undefined on input line 352.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 366.
 
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 7 undefined on input line 352.
-
-
-LaTeX Warning: Citation `Kapitel 4.1' on page 7 undefined on input line 352.
-
-
-Underfull \hbox (badness 3108) in paragraph at lines 352--353
+Underfull \hbox (badness 3108) in paragraph at lines 366--367
 []\T1/ptm/m/n/10 XML sticht in bei-den Im-ple-men-tie-run-gen als lang-
  []
 
 [7 <./images/graphs/python_dataset_flat_intlist_8MB_json_combined_times.png> <./images/graphs/rust_dataset_flat_intlist_8MB_json_combined_times.png>]
-<images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png, id=165, 722.7pt x 433.62pt>
+<images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png, id=182, 722.7pt x 433.62pt>
 File: images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png Graphic file (type png)
 <use images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png>
-Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 356.
+Package pdftex.def Info: images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 370.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 356--357
+Overfull \hbox (12.0pt too wide) in paragraph at lines 370--371
  [][] 
  []
 
-<images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png, id=166, 722.7pt x 433.62pt>
+<images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png, id=183, 722.7pt x 433.62pt>
 File: images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png Graphic file (type png)
 <use images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png>
-Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 363.
+Package pdftex.def Info: images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png  used on input line 377.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 363--364
+Overfull \hbox (12.0pt too wide) in paragraph at lines 377--378
  [][] 
  []
 
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 8 undefined on input line 368.
+LaTeX Warning: Citation `10.1145/944579.944589' on page 8 undefined on input line 382.
 
 
-LaTeX Warning: Citation `Figure 9' on page 8 undefined on input line 368.
-
-
-Underfull \hbox (badness 1178) in paragraph at lines 368--369
+Underfull \hbox (badness 1178) in paragraph at lines 382--383
 \T1/ptm/m/n/10 ÿe-ren Da-ten-sät-zen mit je-weils 256MB an Nutz-da-ten.
  []
 
-<images/graphs/python_dataset_int_tree_small_json_combined_times.png, id=169, 722.7pt x 433.62pt>
+<images/graphs/python_dataset_int_tree_small_json_combined_times.png, id=186, 722.7pt x 433.62pt>
 File: images/graphs/python_dataset_int_tree_small_json_combined_times.png Graphic file (type png)
 <use images/graphs/python_dataset_int_tree_small_json_combined_times.png>
-Package pdftex.def Info: images/graphs/python_dataset_int_tree_small_json_combined_times.png  used on input line 372.
+Package pdftex.def Info: images/graphs/python_dataset_int_tree_small_json_combined_times.png  used on input line 386.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 372--373
+Overfull \hbox (12.0pt too wide) in paragraph at lines 386--387
  [][] 
  []
 
 
-Underfull \hbox (badness 1442) in paragraph at lines 373--373
+Underfull \hbox (badness 1442) in paragraph at lines 387--387
 []\T1/ptm/b/n/8 Abbildung 6. []Serialisierungs- und De-se-ria-li-sie-rungs-zeit In-te-ger-
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/graphs/rust_dataset_int_tree_small_json_combined_times.png, id=170, 722.7pt x 433.62pt>
+<images/graphs/rust_dataset_int_tree_small_json_combined_times.png, id=187, 722.7pt x 433.62pt>
 File: images/graphs/rust_dataset_int_tree_small_json_combined_times.png Graphic file (type png)
 <use images/graphs/rust_dataset_int_tree_small_json_combined_times.png>
-Package pdftex.def Info: images/graphs/rust_dataset_int_tree_small_json_combined_times.png  used on input line 379.
+Package pdftex.def Info: images/graphs/rust_dataset_int_tree_small_json_combined_times.png  used on input line 393.
 (pdftex.def)             Requested size: 243.60645pt x 146.1651pt.
 
-Overfull \hbox (12.0pt too wide) in paragraph at lines 379--380
+Overfull \hbox (12.0pt too wide) in paragraph at lines 393--394
  [][] 
  []
 
 
-Underfull \hbox (badness 1442) in paragraph at lines 380--380
+Underfull \hbox (badness 1442) in paragraph at lines 394--394
 []\T1/ptm/b/n/8 Abbildung 7. []Serialisierungs- und De-se-ria-li-sie-rungs-zeit In-te-ger-
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: Citation `10.1145/944579.944589' on page 8 undefined on input line 395.
-
+<images/graphs/combined_compression_ratios.png, id=191, 1011.78pt x 578.16pt>
+File: images/graphs/combined_compression_ratios.png Graphic file (type png)
+<use images/graphs/combined_compression_ratios.png>
+Package pdftex.def Info: images/graphs/combined_compression_ratios.png  used on input line 410.
+(pdftex.def)             Requested size: 487.2129pt x 278.41348pt.
 [8 <./images/graphs/python_dataset_flat_intlist_256MB_json_combined_times.png> <./images/graphs/rust_dataset_flat_intlist_256MB_json_combined_times.png> <./images/graphs/python_dataset_int_tree_small_json_combined_times.png> <./images/graphs/rust_dataset_int_tree_small_json_combined_times.png>]
-Underfull \hbox (badness 4726) in paragraph at lines 403--404
+Overfull \hbox (61.80026pt too wide) in paragraph at lines 425--433
+[][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [9 <./images/graphs/combined_compression_ratios.png>]
+Underfull \hbox (badness 4726) in paragraph at lines 446--447
 []\T1/ptm/m/n/10 XML und Pro-to-buf hin-ge-gen er-for-dern einen grö-
  []
 
 
-Underfull \hbox (badness 6125) in paragraph at lines 403--404
+Underfull \hbox (badness 6125) in paragraph at lines 446--447
 \T1/ptm/m/n/10 ÿe-ren Im-ple-men-tie-rungs-auf-wand. Bei XML müs-sen
  []
 
 
-LaTeX Warning: Citation `10.1145/944579.944589' on page 9 undefined on input line 415.
+LaTeX Warning: Citation `ProgrammerAL_SerializationBenchmarks' on page 10 undefined on input line 457.
 
-[9]
+
+LaTeX Warning: Citation `Nate10_2024' on page 10 undefined on input line 460.
+
+
+LaTeX Warning: Citation `Pommerenig_2019' on page 10 undefined on input line 463.
+
+
+LaTeX Warning: Citation `10.1145/944579.944589' on page 10 undefined on input line 468.
+
+[10]
 No file SeminarBeispiel.bbl.
-(output/SeminarBeispiel.aux
+[11
+
+] (output/SeminarBeispiel.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 8.
 )
  ***********
@@ -638,21 +654,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `SeminarBeispiel.out' has not changed.
-(rerunfilecheck)             Checksum: 557CE8E7CB210CDA2D21A09D6468C878;4733.
+(rerunfilecheck)             Checksum: 4AFC182E53023CC7E44600F732AA3943;5112.
  ) 
 Here is how much of TeX's memory you used:
- 13292 strings out of 476023
- 220453 string characters out of 5791581
+ 13317 strings out of 476023
+ 221101 string characters out of 5791581
  1952187 words of memory out of 5000000
- 35177 multiletter control sequences out of 15000+600000
+ 35193 multiletter control sequences out of 15000+600000
  607617 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  90i,12n,93p,1627b,432s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on output/SeminarBeispiel.pdf (9 pages, 356899 bytes).
+Output written on output/SeminarBeispiel.pdf (11 pages, 413320 bytes).
 PDF statistics:
- 255 PDF objects out of 1000 (max. 8388607)
- 203 compressed objects within 3 object streams
- 47 named destinations out of 1000 (max. 500000)
- 236 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 287 PDF objects out of 1000 (max. 8388607)
+ 231 compressed objects within 3 object streams
+ 56 named destinations out of 1000 (max. 500000)
+ 273 words of extra memory for PDF output out of 10000 (max. 10000000)
 

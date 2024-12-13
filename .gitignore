@@ -5,3 +5,4 @@ serialize_rust/target
 datasets
 /datasets/
 /exported_charts*
+/documentation/output/
